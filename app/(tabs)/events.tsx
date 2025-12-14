@@ -5,7 +5,7 @@ import { ActivitySearch } from '@/components/activity-search';
 import { LocationInput } from '@/components/location-input';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors } from '@/constants/theme';
+import { BorderRadius, Colors, Shadows, Spacing } from '@/constants/theme';
 import { mockActivities } from '@/data/activities';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Activity } from '@/types/activity';
@@ -15,11 +15,11 @@ import * as Location from 'expo-location';
 import { router } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import {
-	FlatList,
-	Pressable,
-	RefreshControl,
-	StyleSheet,
-	View,
+  FlatList,
+  Pressable,
+  RefreshControl,
+  StyleSheet,
+  View,
 } from 'react-native';
 
 interface ActivityWithDistance extends Activity {
@@ -187,7 +187,7 @@ export default function EventsScreen() {
   // Render Map View
   if (viewMode === 'map') {
     return (
-      <ThemedView style={styles.container}>
+      <ThemedView style={[styles.container, { backgroundColor: 'transparent' }]}>
         {/* Map Controls Overlay */}
         <View style={styles.mapControlsContainer}>
           {/* Location Input */}
@@ -226,7 +226,10 @@ export default function EventsScreen() {
         <Pressable
           style={[
             styles.floatingButton,
-            { backgroundColor: Colors[colorScheme ?? 'light'].tint }
+            {
+              backgroundColor: Colors.light.actionDark
+            },
+            Shadows.lg,
           ]}
           onPress={toggleViewMode}
         >
@@ -238,7 +241,7 @@ export default function EventsScreen() {
 
   // Render List View
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView style={[styles.container, { backgroundColor: 'transparent' }]}>
       <FlatList
         data={filteredActivities}
         renderItem={({ item }) => (
@@ -259,7 +262,7 @@ export default function EventsScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={handleRefresh}
-            tintColor={Colors[colorScheme ?? 'light'].tint}
+            tintColor={Colors[colorScheme ?? 'light'].action}
           />
         }
         showsVerticalScrollIndicator={false}
@@ -271,7 +274,10 @@ export default function EventsScreen() {
       <Pressable
         style={[
           styles.floatingButton,
-          { backgroundColor: Colors[colorScheme ?? 'light'].tint }
+          {
+            backgroundColor: Colors.light.actionDark
+          },
+          Shadows.lg,
         ]}
         onPress={toggleViewMode}
       >
@@ -286,7 +292,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listContent: {
-    paddingBottom: 80, // Extra padding for floating button
+    paddingBottom: Spacing.xxxl + Spacing.xl, // Extra padding for floating button (48 + 32)
   },
   emptyListContent: {
     flexGrow: 1,
@@ -295,8 +301,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingRight: 16,
-    paddingVertical: 8,
+    paddingRight: Spacing.md,
+    paddingVertical: Spacing.sm,
   },
   resultsCount: {
     fontSize: 13,
@@ -306,13 +312,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 40,
-    paddingVertical: 60,
+    paddingHorizontal: Spacing.xxl,
+    paddingVertical: Spacing.xxxl + Spacing.md,
   },
   emptyTitle: {
     fontSize: 20,
-    marginTop: 16,
-    marginBottom: 8,
+    marginTop: Spacing.md,
+    marginBottom: Spacing.sm,
   },
   emptyDescription: {
     fontSize: 14,
@@ -321,21 +327,13 @@ const styles = StyleSheet.create({
   },
   floatingButton: {
     position: 'absolute',
-    bottom: 20,
-    right: 20,
+    bottom: Spacing.lg,
+    right: Spacing.lg,
     width: 56,
     height: 56,
-    borderRadius: 28,
+    borderRadius: BorderRadius.full,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
-    elevation: 8,
   },
   mapControlsContainer: {
     position: 'absolute',
@@ -343,7 +341,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 10,
-    paddingTop: 10,
+    paddingTop: Spacing.sm + Spacing.xs, // 12px
   },
   mapLocationInput: {
     paddingHorizontal: 0,
@@ -352,8 +350,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
   },
   mapFiltersRow: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
   },
   filtersWrapper: {
     flexDirection: 'row',
