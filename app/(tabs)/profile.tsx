@@ -483,7 +483,7 @@ const styles = StyleSheet.create({
   },
   fabContainer: {
     position: 'absolute',
-    bottom: 32,
+    bottom: 96, // 96px from bottom (above nav bar)
     right: 24,
     flexDirection: 'row',
     gap: 16,

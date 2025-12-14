@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
   },
   floatingButton: {
     position: 'absolute',
-    bottom: Spacing.lg,
+    bottom: Spacing.xxxl + Spacing.xxxl, // 48 + 48 = 96px from bottom (above nav bar)
     right: Spacing.lg,
     width: 56,
     height: 56,

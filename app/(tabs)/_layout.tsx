@@ -19,7 +19,7 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
         tabBarStyle: {
           position: 'absolute',
-          bottom: Spacing.lg,
+          bottom: Spacing.lg, // 24px from bottom - original position
           marginHorizontal: Spacing.xl,
           borderRadius: BorderRadius.full,
           height: 56,
