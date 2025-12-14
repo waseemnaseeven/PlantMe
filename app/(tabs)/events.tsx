@@ -1,5 +1,6 @@
 import { ActivityCard } from '@/components/activity-card';
 import { ActivityFilters, FilterOptions } from '@/components/activity-filters';
+import { ActivityMap } from '@/components/activity-map';
 import { ActivitySearch } from '@/components/activity-search';
 import { LocationInput } from '@/components/location-input';
 import { ThemedText } from '@/components/themed-text';
@@ -14,18 +15,22 @@ import * as Location from 'expo-location';
 import { router } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import {
-  FlatList,
-  RefreshControl,
-  StyleSheet,
-  View,
+	FlatList,
+	Pressable,
+	RefreshControl,
+	StyleSheet,
+	View,
 } from 'react-native';
 
 interface ActivityWithDistance extends Activity {
   distance?: number;
 }
 
-export default function ExploreScreen() {
+type ViewMode = 'list' | 'map';
+
+export default function EventsScreen() {
   const colorScheme = useColorScheme();
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [searchQuery, setSearchQuery] = useState('');
   const [userLocation, setUserLocation] = useState<Location.LocationObject | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -131,6 +136,10 @@ export default function ExploreScreen() {
     setRefreshing(false);
   };
 
+  const toggleViewMode = () => {
+    setViewMode((prev) => (prev === 'list' ? 'map' : 'list'));
+  };
+
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
       <MaterialCommunityIcons
@@ -147,7 +156,7 @@ export default function ExploreScreen() {
     </View>
   );
 
-  const renderHeader = () => (
+  const renderListHeader = () => (
     <View>
       {/* Location Input */}
       <LocationInput onLocationChange={setUserLocation} />
@@ -175,6 +184,59 @@ export default function ExploreScreen() {
     </View>
   );
 
+  // Render Map View
+  if (viewMode === 'map') {
+    return (
+      <ThemedView style={styles.container}>
+        {/* Map Controls Overlay */}
+        <View style={styles.mapControlsContainer}>
+          {/* Location Input */}
+          <View style={styles.mapLocationInput}>
+            <LocationInput onLocationChange={setUserLocation} />
+          </View>
+
+          {/* Search Bar */}
+          <View style={styles.mapSearchBar}>
+            <ActivitySearch
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              placeholder="Search activities..."
+            />
+          </View>
+
+          {/* Filters and View Toggle Row */}
+          <View style={styles.mapFiltersRow}>
+            <View style={styles.filtersWrapper}>
+              <ActivityFilters
+                filters={filters}
+                onFiltersChange={setFilters}
+                hasLocation={userLocation !== null}
+              />
+              <ThemedText style={styles.resultsCount}>
+                {filteredActivities.length} {filteredActivities.length === 1 ? 'activity' : 'activities'}
+              </ThemedText>
+            </View>
+          </View>
+        </View>
+
+        {/* Map */}
+        <ActivityMap activities={filteredActivities} />
+
+        {/* Floating View Toggle Button */}
+        <Pressable
+          style={[
+            styles.floatingButton,
+            { backgroundColor: Colors[colorScheme ?? 'light'].tint }
+          ]}
+          onPress={toggleViewMode}
+        >
+          <MaterialCommunityIcons name="format-list-bulleted" size={24} color="#fff" />
+        </Pressable>
+      </ThemedView>
+    );
+  }
+
+  // Render List View
   return (
     <ThemedView style={styles.container}>
       <FlatList
@@ -187,7 +249,7 @@ export default function ExploreScreen() {
           />
         )}
         keyExtractor={(item) => item.id}
-        ListHeaderComponent={renderHeader}
+        ListHeaderComponent={renderListHeader}
         ListEmptyComponent={renderEmptyState}
         contentContainerStyle={[
           styles.listContent,
@@ -204,6 +266,17 @@ export default function ExploreScreen() {
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
       />
+
+      {/* Floating View Toggle Button */}
+      <Pressable
+        style={[
+          styles.floatingButton,
+          { backgroundColor: Colors[colorScheme ?? 'light'].tint }
+        ]}
+        onPress={toggleViewMode}
+      >
+        <MaterialCommunityIcons name="map" size={24} color="#fff" />
+      </Pressable>
     </ThemedView>
   );
 }
@@ -213,7 +286,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listContent: {
-    paddingBottom: 20,
+    paddingBottom: 80, // Extra padding for floating button
   },
   emptyListContent: {
     flexGrow: 1,
@@ -245,5 +318,47 @@ const styles = StyleSheet.create({
     fontSize: 14,
     opacity: 0.6,
     textAlign: 'center',
+  },
+  floatingButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
+  },
+  mapControlsContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    paddingTop: 10,
+  },
+  mapLocationInput: {
+    paddingHorizontal: 0,
+  },
+  mapSearchBar: {
+    paddingHorizontal: 0,
+  },
+  mapFiltersRow: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  filtersWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flex: 1,
   },
 });

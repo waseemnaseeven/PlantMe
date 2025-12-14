@@ -105,7 +105,7 @@ export default function HomeScreen() {
               Upcoming Activities
             </ThemedText>
             <Pressable
-              onPress={() => router.push('/(tabs)/explore')}
+              onPress={() => router.push('/(tabs)/events')}
               style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
             >
               <ThemedText
@@ -194,7 +194,7 @@ export default function HomeScreen() {
           </ThemedText>
           <View style={styles.actionsGrid}>
             <Pressable
-              onPress={() => router.push('/(tabs)/explore')}
+              onPress={() => router.push('/(tabs)/events')}
               style={({ pressed }) => [
                 styles.actionButton,
                 { opacity: pressed ? 0.7 : 1 },
@@ -255,7 +255,7 @@ export default function HomeScreen() {
             </Pressable>
 
             <Pressable
-              onPress={() => router.push('/(tabs)/around-me')}
+              onPress={() => router.push('/(tabs)/events')}
               style={({ pressed }) => [
                 styles.actionButton,
                 { opacity: pressed ? 0.7 : 1 },
@@ -269,16 +269,16 @@ export default function HomeScreen() {
                   ]}
                 >
                   <MaterialCommunityIcons
-                    name="account-group"
+                    name="map-marker-radius"
                     size={28}
                     color="#2E7D32"
                   />
                 </View>
                 <ThemedText type="defaultSemiBold" style={styles.actionTitle}>
-                  Find Friends
+                  Explore Events
                 </ThemedText>
                 <ThemedText style={styles.actionDescription}>
-                  Connect with others
+                  Map & list view
                 </ThemedText>
               </ThemedView>
             </Pressable>
