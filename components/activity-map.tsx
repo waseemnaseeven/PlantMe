@@ -3,8 +3,9 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Activity } from '@/types/activity';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
+import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, View } from 'react-native';
 import MapView, { Callout, Marker } from 'react-native-maps';
 import { ThemedText } from './themed-text';
 import { ThemedView } from './themed-view';
@@ -126,7 +127,7 @@ export function ActivityMap({ activities }: ActivityMapProps) {
                 />
               </View>
             </View>
-            <Callout>
+            <Callout onPress={() => router.push(`/activity/${activity.id}`)}>
               <ThemedView style={styles.callout}>
                 <ThemedText type="defaultSemiBold" style={styles.calloutTitle}>
                   {activity.title}
@@ -142,7 +143,7 @@ export function ActivityMap({ activities }: ActivityMapProps) {
                     {getActivityLabel(activity.type)}
                   </ThemedText>
                 </View>
-                <ThemedText style={styles.calloutDescription}>
+                <ThemedText style={styles.calloutDescription} numberOfLines={2}>
                   {activity.description}
                 </ThemedText>
                 <View style={styles.calloutInfoRow}>
@@ -168,10 +169,20 @@ export function ActivityMap({ activities }: ActivityMapProps) {
                     color="#666"
                     style={styles.calloutIcon}
                   />
-                  <ThemedText style={styles.calloutAddress}>
+                  <ThemedText style={styles.calloutAddress} numberOfLines={1}>
                     {activity.address}
                   </ThemedText>
                 </View>
+                <Pressable style={styles.viewDetailsButton}>
+                  <ThemedText style={styles.viewDetailsText}>
+                    Tap to view details
+                  </ThemedText>
+                  <MaterialCommunityIcons
+                    name="arrow-right"
+                    size={14}
+                    color="#2196F3"
+                  />
+                </Pressable>
               </ThemedView>
             </Callout>
           </Marker>
@@ -248,5 +259,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     opacity: 0.7,
     flex: 1,
+  },
+  viewDetailsButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#E0E0E0',
+    gap: 4,
+  },
+  viewDetailsText: {
+    fontSize: 12,
+    color: '#2196F3',
+    fontWeight: '600',
   },
 });

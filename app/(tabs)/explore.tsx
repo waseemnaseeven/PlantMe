@@ -11,6 +11,7 @@ import { Activity } from '@/types/activity';
 import { calculateDistance } from '@/utils/distance';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
+import { router } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import {
   FlatList,
@@ -182,10 +183,7 @@ export default function ExploreScreen() {
           <ActivityCard
             activity={item}
             distance={item.distance}
-            onPress={() => {
-              // TODO: Navigate to activity detail screen
-              console.log('Activity pressed:', item.id);
-            }}
+            onPress={() => router.push(`/activity/${item.id}`)}
           />
         )}
         keyExtractor={(item) => item.id}
