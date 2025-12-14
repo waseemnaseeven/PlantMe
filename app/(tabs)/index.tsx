@@ -62,14 +62,6 @@ export default function HomeScreen() {
       >
         {/* Header */}
         <View style={styles.header}>
-          <View>
-            <ThemedText type="title" style={styles.greeting}>
-              {getGreeting()}, {profile.name.split(' ')[0]}! 👋
-            </ThemedText>
-            <ThemedText style={styles.subtitle}>
-              Let's make today plant-powered
-            </ThemedText>
-          </View>
           <Pressable
             onPress={() => router.push('/(tabs)/profile')}
             style={({ pressed }) => [
@@ -91,6 +83,14 @@ export default function HomeScreen() {
               </ThemedText>
             </View>
           </Pressable>
+          <View>
+            <ThemedText type="title" style={styles.greeting}>
+              {getGreeting()}, {profile.name.split(' ')[0]}!
+            </ThemedText>
+            <ThemedText style={styles.subtitle}>
+              Let's make today plant-powered
+            </ThemedText>
+          </View>
         </View>
 
         {/* Quick Stats */}
@@ -301,15 +301,14 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'flex-start',
     paddingHorizontal: 16,
     paddingTop: 60,
     paddingBottom: 24,
+    gap: 12
   },
   greeting: {
-    fontSize: 28,
-    marginBottom: 4,
+    fontSize: 24,
   },
   subtitle: {
     fontSize: 14,
