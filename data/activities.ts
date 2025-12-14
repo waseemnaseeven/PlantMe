@@ -112,4 +112,41 @@ export const mockActivities: Activity[] = [
     date: '2024-02-23',
     address: '18 Rue de la Roquette, 75011 Paris',
   },
+  // Meetups
+  {
+    id: '10',
+    title: 'Plant-Based Community Meetup',
+    type: 'meetup',
+    description: 'Connect with like-minded individuals passionate about plant-based living',
+    coordinate: {
+      latitude: 48.8520,
+      longitude: 2.3450,
+    },
+    date: '2024-02-24',
+    address: '30 Rue des Francs Bourgeois, 75003 Paris',
+  },
+  {
+    id: '11',
+    title: 'Vegan Book Club',
+    type: 'meetup',
+    description: 'Monthly gathering to discuss books about sustainability and plant-based lifestyle',
+    coordinate: {
+      latitude: 48.8650,
+      longitude: 2.3210,
+    },
+    date: '2024-02-25',
+    address: '45 Rue de Clichy, 75009 Paris',
+  },
+  {
+    id: '12',
+    title: 'Plant-Based Fitness Group',
+    type: 'meetup',
+    description: 'Join our outdoor workout session followed by healthy plant-based snacks',
+    coordinate: {
+      latitude: 48.8448,
+      longitude: 2.3750,
+    },
+    date: '2024-02-26',
+    address: 'Parc de Bercy, 75012 Paris',
+  },
 ];

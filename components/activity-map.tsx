@@ -1,9 +1,11 @@
+import { ActivityColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Activity } from '@/types/activity';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import React, { useEffect, useState } from 'react';
-import { Alert, Platform, StyleSheet, View } from 'react-native';
-import MapView, { Callout, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { Alert, StyleSheet, View } from 'react-native';
+import MapView, { Callout, Marker } from 'react-native-maps';
 import { ThemedText } from './themed-text';
 import { ThemedView } from './themed-view';
 
@@ -60,31 +62,39 @@ export function ActivityMap({ activities }: ActivityMapProps) {
   }, []);
 
   const getMarkerColor = (type: Activity['type']) => {
+    return ActivityColors[type] || '#C4D7F2'; // Default to pastel blue
+  };
+
+  const getActivityIconName = (type: Activity['type']): keyof typeof MaterialCommunityIcons.glyphMap => {
     switch (type) {
       case 'workshop':
-        return '#4CAF50'; // Green for workshops
+        return 'book-open-variant';
       case 'dinner-party':
-        return '#FF6B35'; // Orange/Red for dinner parties
+        return 'silverware-fork-knife';
+      case 'meetup':
+        return 'account-group';
       default:
-        return '#2196F3'; // Blue as fallback
+        return 'map-marker';
     }
   };
 
-  const getActivityIcon = (type: Activity['type']) => {
+  const getActivityLabel = (type: Activity['type']) => {
     switch (type) {
       case 'workshop':
-        return '🎓';
+        return 'Workshop';
       case 'dinner-party':
-        return '🍽️';
+        return 'Dinner Party';
+      case 'meetup':
+        return 'Meetup';
       default:
-        return '📍';
+        return 'Event';
     }
   };
 
   return (
     <View style={styles.container}>
       <MapView
-        provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
+        // provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
         style={styles.map}
         initialRegion={region}
         region={region}
@@ -92,6 +102,7 @@ export function ActivityMap({ activities }: ActivityMapProps) {
         showsMyLocationButton={true}
         showsCompass={true}
         showsScale={true}
+        showsPointsOfInterest={false}
       >
         {activities.map((activity) => (
           <Marker
@@ -108,9 +119,11 @@ export function ActivityMap({ activities }: ActivityMapProps) {
                   { backgroundColor: getMarkerColor(activity.type) },
                 ]}
               >
-                <ThemedText style={styles.markerIcon}>
-                  {getActivityIcon(activity.type)}
-                </ThemedText>
+                <MaterialCommunityIcons
+                  name={getActivityIconName(activity.type)}
+                  size={22}
+                  color="#fff"
+                />
               </View>
             </View>
             <Callout>
@@ -118,23 +131,47 @@ export function ActivityMap({ activities }: ActivityMapProps) {
                 <ThemedText type="defaultSemiBold" style={styles.calloutTitle}>
                   {activity.title}
                 </ThemedText>
-                <ThemedText style={styles.calloutType}>
-                  {activity.type === 'workshop' ? '🎓 Workshop' : '🍽️ Dinner Party'}
-                </ThemedText>
+                <View style={styles.calloutTypeContainer}>
+                  <MaterialCommunityIcons
+                    name={getActivityIconName(activity.type)}
+                    size={14}
+                    color={getMarkerColor(activity.type)}
+                    style={styles.calloutIcon}
+                  />
+                  <ThemedText style={styles.calloutType}>
+                    {getActivityLabel(activity.type)}
+                  </ThemedText>
+                </View>
                 <ThemedText style={styles.calloutDescription}>
                   {activity.description}
                 </ThemedText>
-                <ThemedText style={styles.calloutDate}>
-                  📅 {new Date(activity.date).toLocaleDateString('en-US', {
-                    weekday: 'short',
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                  })}
-                </ThemedText>
-                <ThemedText style={styles.calloutAddress}>
-                  📍 {activity.address}
-                </ThemedText>
+                <View style={styles.calloutInfoRow}>
+                  <MaterialCommunityIcons
+                    name="calendar"
+                    size={12}
+                    color="#666"
+                    style={styles.calloutIcon}
+                  />
+                  <ThemedText style={styles.calloutDate}>
+                    {new Date(activity.date).toLocaleDateString('en-US', {
+                      weekday: 'short',
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                    })}
+                  </ThemedText>
+                </View>
+                <View style={styles.calloutInfoRow}>
+                  <MaterialCommunityIcons
+                    name="map-marker"
+                    size={12}
+                    color="#666"
+                    style={styles.calloutIcon}
+                  />
+                  <ThemedText style={styles.calloutAddress}>
+                    {activity.address}
+                  </ThemedText>
+                </View>
               </ThemedView>
             </Callout>
           </Marker>
@@ -172,9 +209,6 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  markerIcon: {
-    fontSize: 20,
-  },
   callout: {
     width: 250,
     padding: 10,
@@ -182,24 +216,37 @@ const styles = StyleSheet.create({
   },
   calloutTitle: {
     fontSize: 16,
-    marginBottom: 5,
+    marginBottom: 8,
+  },
+  calloutTypeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
   },
   calloutType: {
     fontSize: 12,
-    marginBottom: 5,
-    opacity: 0.8,
+    fontWeight: '600',
+  },
+  calloutIcon: {
+    marginRight: 6,
   },
   calloutDescription: {
     fontSize: 14,
-    marginBottom: 8,
+    marginBottom: 10,
+  },
+  calloutInfoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
   },
   calloutDate: {
     fontSize: 12,
-    marginBottom: 4,
     opacity: 0.7,
+    flex: 1,
   },
   calloutAddress: {
     fontSize: 12,
     opacity: 0.7,
+    flex: 1,
   },
 });

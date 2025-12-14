@@ -1,4 +1,4 @@
-export type ActivityType = 'workshop' | 'dinner-party';
+export type ActivityType = 'workshop' | 'dinner-party' | 'meetup';
 
 export interface Activity {
   id: string;

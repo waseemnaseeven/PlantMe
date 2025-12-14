@@ -27,6 +27,13 @@ export const Colors = {
   },
 };
 
+// Vibrant nature-inspired color palette for activity types
+export const ActivityColors = {
+  workshop: '#4CAF50',      // Vibrant green (growth, learning, nature)
+  'dinner-party': '#FF6B35', // Vibrant coral/orange (warmth, food, community)
+  meetup: '#2E7D32',         // Deep forest green (community, sustainability)
+};
+
 export const Fonts = Platform.select({
   ios: {
     /** iOS `UIFontDescriptorSystemDesignDefault` */
