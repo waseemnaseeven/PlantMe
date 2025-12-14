@@ -1,98 +1,424 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
+import { ActivityCardMini } from '@/components/activity-card-mini';
+import { CommunityHighlights } from '@/components/community-highlights';
+import { QuickStats } from '@/components/quick-stats';
+import { RecipeCard } from '@/components/recipe-card';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { Colors } from '@/constants/theme';
+import { mockActivities } from '@/data/activities';
+import { mockUserProfile } from '@/data/profile';
+import { getRecipesByDietObjective } from '@/data/recipes';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import React, { useState } from 'react';
+import {
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const colorScheme = useColorScheme();
+  const [refreshing, setRefreshing] = useState(false);
+  const profile = mockUserProfile;
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+  // Get upcoming activities (next 3)
+  const upcomingActivities = mockActivities
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .slice(0, 3);
+
+  // Get recipes based on user's diet objective
+  const recommendedRecipes = getRecipesByDietObjective(profile.dietObjective).slice(0, 6);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    // Simulate data refresh
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setRefreshing(false);
+  };
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good Morning';
+    if (hour < 18) return 'Good Afternoon';
+    return 'Good Evening';
+  };
+
+  return (
+    <ThemedView style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            tintColor={Colors[colorScheme ?? 'light'].tint}
+          />
+        }
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <View>
+            <ThemedText type="title" style={styles.greeting}>
+              {getGreeting()}, {profile.name.split(' ')[0]}! 👋
+            </ThemedText>
+            <ThemedText style={styles.subtitle}>
+              Let's make today plant-powered
+            </ThemedText>
+          </View>
+          <Pressable
+            onPress={() => router.push('/(tabs)/profile')}
+            style={({ pressed }) => [
+              styles.avatarButton,
+              { opacity: pressed ? 0.7 : 1 },
+            ]}
+          >
+            <View
+              style={[
+                styles.avatar,
+                { backgroundColor: Colors[colorScheme ?? 'light'].tint },
+              ]}
+            >
+              <ThemedText style={styles.avatarText}>
+                {profile.name
+                  .split(' ')
+                  .map((n) => n[0])
+                  .join('')}
+              </ThemedText>
+            </View>
+          </Pressable>
+        </View>
+
+        {/* Quick Stats */}
+        <View style={styles.section}>
+          <QuickStats stats={profile.stats} />
+        </View>
+
+        {/* Upcoming Activities */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <ThemedText type="subtitle" style={styles.sectionTitle}>
+              Upcoming Activities
+            </ThemedText>
+            <Pressable
+              onPress={() => router.push('/(tabs)/explore')}
+              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+            >
+              <ThemedText
+                style={[
+                  styles.seeAllText,
+                  { color: Colors[colorScheme ?? 'light'].tint },
+                ]}
+              >
+                See All
+              </ThemedText>
+            </Pressable>
+          </View>
+
+          {upcomingActivities.length > 0 ? (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.activitiesScroll}
+            >
+              {upcomingActivities.map((activity) => (
+                <ActivityCardMini
+                  key={activity.id}
+                  activity={activity}
+                  onPress={() => router.push(`/activity/${activity.id}`)}
+                />
+              ))}
+            </ScrollView>
+          ) : (
+            <ThemedView style={styles.emptyState}>
+              <MaterialCommunityIcons
+                name="calendar-blank"
+                size={48}
+                color={Colors[colorScheme ?? 'light'].icon}
+              />
+              <ThemedText style={styles.emptyText}>
+                No upcoming activities yet
+              </ThemedText>
+            </ThemedView>
+          )}
+        </View>
+
+        {/* Recipe Recommendations */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <View>
+              <ThemedText type="subtitle" style={styles.sectionTitle}>
+                Recipes for You
+              </ThemedText>
+              <ThemedText style={styles.sectionSubtitle}>
+                Based on your {profile.dietObjective} goal
+              </ThemedText>
+            </View>
+          </View>
+
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.recipesScroll}
+          >
+            {recommendedRecipes.map((recipe) => (
+              <RecipeCard
+                key={recipe.id}
+                recipe={recipe}
+                onPress={() => {
+                  // TODO: Navigate to recipe detail page
+                  console.log('Recipe pressed:', recipe.id);
+                }}
+              />
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* Community Highlights */}
+        <View style={styles.section}>
+          <CommunityHighlights
+            activeMembers={127}
+            recentAchievements={34}
+            upcomingActivities={upcomingActivities.length}
+          />
+        </View>
+
+        {/* Quick Actions */}
+        <View style={styles.section}>
+          <ThemedText type="subtitle" style={styles.sectionTitleCentered}>
+            Quick Actions
+          </ThemedText>
+          <View style={styles.actionsGrid}>
+            <Pressable
+              onPress={() => router.push('/(tabs)/explore')}
+              style={({ pressed }) => [
+                styles.actionButton,
+                { opacity: pressed ? 0.7 : 1 },
+              ]}
+            >
+              <ThemedView style={styles.actionCard}>
+                <View
+                  style={[
+                    styles.actionIconContainer,
+                    { backgroundColor: '#4CAF50' + '20' },
+                  ]}
+                >
+                  <MaterialCommunityIcons
+                    name="calendar-plus"
+                    size={28}
+                    color="#4CAF50"
+                  />
+                </View>
+                <ThemedText type="defaultSemiBold" style={styles.actionTitle}>
+                  Join Activity
+                </ThemedText>
+                <ThemedText style={styles.actionDescription}>
+                  Find events near you
+                </ThemedText>
+              </ThemedView>
+            </Pressable>
+
+            <Pressable
+              onPress={() => {
+                // TODO: Navigate to recipe sharing
+                console.log('Share recipe pressed');
+              }}
+              style={({ pressed }) => [
+                styles.actionButton,
+                { opacity: pressed ? 0.7 : 1 },
+              ]}
+            >
+              <ThemedView style={styles.actionCard}>
+                <View
+                  style={[
+                    styles.actionIconContainer,
+                    { backgroundColor: '#FF6B35' + '20' },
+                  ]}
+                >
+                  <MaterialCommunityIcons
+                    name="chef-hat"
+                    size={28}
+                    color="#FF6B35"
+                  />
+                </View>
+                <ThemedText type="defaultSemiBold" style={styles.actionTitle}>
+                  Share Recipe
+                </ThemedText>
+                <ThemedText style={styles.actionDescription}>
+                  Inspire the community
+                </ThemedText>
+              </ThemedView>
+            </Pressable>
+
+            <Pressable
+              onPress={() => router.push('/(tabs)/around-me')}
+              style={({ pressed }) => [
+                styles.actionButton,
+                { opacity: pressed ? 0.7 : 1 },
+              ]}
+            >
+              <ThemedView style={styles.actionCard}>
+                <View
+                  style={[
+                    styles.actionIconContainer,
+                    { backgroundColor: '#2E7D32' + '20' },
+                  ]}
+                >
+                  <MaterialCommunityIcons
+                    name="account-group"
+                    size={28}
+                    color="#2E7D32"
+                  />
+                </View>
+                <ThemedText type="defaultSemiBold" style={styles.actionTitle}>
+                  Find Friends
+                </ThemedText>
+                <ThemedText style={styles.actionDescription}>
+                  Connect with others
+                </ThemedText>
+              </ThemedView>
+            </Pressable>
+          </View>
+        </View>
+
+        {/* Bottom Padding */}
+        <View style={styles.bottomPadding} />
+      </ScrollView>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 24,
+  },
+  header: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    paddingHorizontal: 16,
+    paddingTop: 60,
+    paddingBottom: 24,
+  },
+  greeting: {
+    fontSize: 28,
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 14,
+    opacity: 0.6,
+  },
+  avatarButton: {
+    marginTop: 4,
+  },
+  avatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  avatarText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#fff',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  section: {
+    marginBottom: 32,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 20,
+  },
+  sectionSubtitle: {
+    fontSize: 13,
+    opacity: 0.6,
+    marginTop: 2,
+    textTransform: 'capitalize',
+  },
+  sectionTitleCentered: {
+    fontSize: 20,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  seeAllText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  recipesScroll: {
+    paddingLeft: 16,
+    paddingRight: 16,
+    gap: 16,
+  },
+  activitiesScroll: {
+    paddingLeft: 16,
+    paddingRight: 16,
+    gap: 16,
+  },
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 40,
+    marginHorizontal: 16,
+    borderRadius: 16,
+  },
+  emptyText: {
+    fontSize: 14,
+    opacity: 0.6,
+    marginTop: 12,
+  },
+  actionsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingHorizontal: 16,
+    gap: 12,
+  },
+  actionButton: {
+    width: '31%',
+    minWidth: 100,
+  },
+  actionCard: {
+    padding: 16,
+    borderRadius: 16,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  actionIconContainer: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  actionTitle: {
+    fontSize: 13,
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  actionDescription: {
+    fontSize: 11,
+    opacity: 0.6,
+    textAlign: 'center',
+  },
+  bottomPadding: {
+    height: 24,
   },
 });
