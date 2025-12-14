@@ -88,7 +88,7 @@ export default function HomeScreen() {
               {getGreeting()}, {profile.name.split(' ')[0]}!
             </ThemedText>
             <ThemedText style={styles.subtitle}>
-              Let's make today plant-powered
+              Let&apos;s make today plant-powered
             </ThemedText>
           </View>
         </View>
