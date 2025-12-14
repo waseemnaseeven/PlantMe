@@ -14,6 +14,10 @@ export const mockActivities: Activity[] = [
     },
     date: '2024-02-15',
     address: '15 Rue de Rivoli, 75001 Paris',
+    price: 45,
+    imageUrl: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800',
+    capacity: 15,
+    attendees: 8,
   },
   {
     id: '2',
@@ -26,6 +30,10 @@ export const mockActivities: Activity[] = [
     },
     date: '2024-02-18',
     address: '42 Avenue des Champs-Élysées, 75008 Paris',
+    price: 0,
+    imageUrl: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800',
+    capacity: 25,
+    attendees: 18,
   },
   {
     id: '3',
@@ -38,6 +46,10 @@ export const mockActivities: Activity[] = [
     },
     date: '2024-02-20',
     address: '28 Rue Saint-Antoine, 75004 Paris',
+    price: 55,
+    imageUrl: 'https://images.unsplash.com/photo-1452195100486-9cc805987862?w=800',
+    capacity: 12,
+    attendees: 10,
   },
   {
     id: '4',
@@ -50,6 +62,10 @@ export const mockActivities: Activity[] = [
     },
     date: '2024-02-22',
     address: '10 Avenue de Wagram, 75017 Paris',
+    price: 0,
+    imageUrl: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800',
+    capacity: 50,
+    attendees: 32,
   },
   // Dinner Parties
   {
@@ -63,6 +79,10 @@ export const mockActivities: Activity[] = [
     },
     date: '2024-02-16',
     address: '5 Avenue Gustave Eiffel, 75007 Paris',
+    price: 10,
+    imageUrl: 'https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?w=800',
+    capacity: 20,
+    attendees: 15,
   },
   {
     id: '6',
@@ -75,6 +95,10 @@ export const mockActivities: Activity[] = [
     },
     date: '2024-02-17',
     address: '12 Rue Mouffetard, 75005 Paris',
+    price: 35,
+    imageUrl: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800',
+    capacity: 16,
+    attendees: 12,
   },
   {
     id: '7',
@@ -87,6 +111,10 @@ export const mockActivities: Activity[] = [
     },
     date: '2024-02-19',
     address: '8 Place de la Bastille, 75011 Paris',
+    price: 25,
+    imageUrl: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800',
+    capacity: 30,
+    attendees: 22,
   },
   {
     id: '8',
@@ -99,6 +127,10 @@ export const mockActivities: Activity[] = [
     },
     date: '2024-02-21',
     address: '25 Rue du Faubourg Saint-Honoré, 75008 Paris',
+    price: 20,
+    imageUrl: 'https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=800',
+    capacity: 18,
+    attendees: 14,
   },
   {
     id: '9',
@@ -111,6 +143,10 @@ export const mockActivities: Activity[] = [
     },
     date: '2024-02-23',
     address: '18 Rue de la Roquette, 75011 Paris',
+    price: 65,
+    imageUrl: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800',
+    capacity: 24,
+    attendees: 20,
   },
   // Meetups
   {
@@ -124,6 +160,10 @@ export const mockActivities: Activity[] = [
     },
     date: '2024-02-24',
     address: '30 Rue des Francs Bourgeois, 75003 Paris',
+    price: 0,
+    imageUrl: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800',
+    capacity: 40,
+    attendees: 28,
   },
   {
     id: '11',
@@ -136,6 +176,10 @@ export const mockActivities: Activity[] = [
     },
     date: '2024-02-25',
     address: '45 Rue de Clichy, 75009 Paris',
+    price: 0,
+    imageUrl: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=800',
+    capacity: 15,
+    attendees: 9,
   },
   {
     id: '12',
@@ -148,5 +192,9 @@ export const mockActivities: Activity[] = [
     },
     date: '2024-02-26',
     address: 'Parc de Bercy, 75012 Paris',
+    price: 5,
+    imageUrl: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800',
+    capacity: 25,
+    attendees: 19,
   },
 ];

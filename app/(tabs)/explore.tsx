@@ -1,112 +1,251 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { Collapsible } from '@/components/ui/collapsible';
-import { ExternalLink } from '@/components/external-link';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
+import { ActivityCard } from '@/components/activity-card';
+import { ActivityFilters, FilterOptions } from '@/components/activity-filters';
+import { ActivitySearch } from '@/components/activity-search';
+import { LocationInput } from '@/components/location-input';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Fonts } from '@/constants/theme';
+import { Colors } from '@/constants/theme';
+import { mockActivities } from '@/data/activities';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Activity } from '@/types/activity';
+import { calculateDistance } from '@/utils/distance';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import * as Location from 'expo-location';
+import React, { useMemo, useState } from 'react';
+import {
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  View,
+} from 'react-native';
 
-export default function TabTwoScreen() {
+interface ActivityWithDistance extends Activity {
+  distance?: number;
+}
+
+export default function ExploreScreen() {
+  const colorScheme = useColorScheme();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [userLocation, setUserLocation] = useState<Location.LocationObject | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [filters, setFilters] = useState<FilterOptions>({
+    types: ['workshop', 'dinner-party', 'meetup'],
+    dateRange: 'all',
+    maxDistance: null,
+    sortBy: 'date',
+  });
+
+  // Calculate distances for all activities
+  const activitiesWithDistance: ActivityWithDistance[] = useMemo(() => {
+    if (!userLocation) {
+      return mockActivities;
+    }
+
+    return mockActivities.map((activity) => ({
+      ...activity,
+      distance: calculateDistance(
+        userLocation.coords.latitude,
+        userLocation.coords.longitude,
+        activity.coordinate.latitude,
+        activity.coordinate.longitude
+      ),
+    }));
+  }, [userLocation]);
+
+  // Filter and sort activities
+  const filteredActivities = useMemo(() => {
+    let filtered = activitiesWithDistance;
+
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (activity) =>
+          activity.title.toLowerCase().includes(query) ||
+          activity.description.toLowerCase().includes(query) ||
+          activity.address.toLowerCase().includes(query)
+      );
+    }
+
+    // Filter by type
+    filtered = filtered.filter((activity) =>
+      filters.types.includes(activity.type)
+    );
+
+    // Filter by date range
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    filtered = filtered.filter((activity) => {
+      const activityDate = new Date(activity.date);
+      
+      switch (filters.dateRange) {
+        case 'today':
+          return activityDate.toDateString() === today.toDateString();
+        case 'week':
+          const weekFromNow = new Date(today);
+          weekFromNow.setDate(weekFromNow.getDate() + 7);
+          return activityDate >= today && activityDate <= weekFromNow;
+        case 'month':
+          const monthFromNow = new Date(today);
+          monthFromNow.setMonth(monthFromNow.getMonth() + 1);
+          return activityDate >= today && activityDate <= monthFromNow;
+        case 'all':
+        default:
+          return true;
+      }
+    });
+
+    // Filter by distance
+    if (filters.maxDistance !== null && userLocation) {
+      filtered = filtered.filter(
+        (activity) =>
+          activity.distance !== undefined &&
+          activity.distance <= filters.maxDistance!
+      );
+    }
+
+    // Sort activities
+    filtered.sort((a, b) => {
+      switch (filters.sortBy) {
+        case 'distance':
+          if (a.distance === undefined) return 1;
+          if (b.distance === undefined) return -1;
+          return a.distance - b.distance;
+        case 'price':
+          return a.price - b.price;
+        case 'date':
+        default:
+          return new Date(a.date).getTime() - new Date(b.date).getTime();
+      }
+    });
+
+    return filtered;
+  }, [activitiesWithDistance, searchQuery, filters, userLocation]);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    // In a real app, you would fetch new data here
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setRefreshing(false);
+  };
+
+  const renderEmptyState = () => (
+    <View style={styles.emptyContainer}>
+      <MaterialCommunityIcons
+        name="calendar-remove"
+        size={64}
+        color={Colors[colorScheme ?? 'light'].icon}
+      />
+      <ThemedText type="defaultSemiBold" style={styles.emptyTitle}>
+        No Activities Found
+      </ThemedText>
+      <ThemedText style={styles.emptyDescription}>
+        Try adjusting your filters or search query
+      </ThemedText>
+    </View>
+  );
+
+  const renderHeader = () => (
+    <View>
+      {/* Location Input */}
+      <LocationInput onLocationChange={setUserLocation} />
+
+      {/* Search Bar */}
+      <ActivitySearch
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        placeholder="Search activities..."
+      />
+
+      {/* Filters */}
+      <View style={styles.filtersRow}>
+        <ActivityFilters
+          filters={filters}
+          onFiltersChange={setFilters}
+          hasLocation={userLocation !== null}
+        />
+        
+        {/* Results Count */}
+        <ThemedText style={styles.resultsCount}>
+          {filteredActivities.length} {filteredActivities.length === 1 ? 'activity' : 'activities'}
+        </ThemedText>
+      </View>
+    </View>
+  );
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText
-          type="title"
-          style={{
-            fontFamily: Fonts.rounded,
-          }}>
-          Explore
-        </ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image
-          source={require('@/assets/images/react-logo.png')}
-          style={{ width: 100, height: 100, alignSelf: 'center' }}
-        />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful{' '}
-          <ThemedText type="defaultSemiBold" style={{ fontFamily: Fonts.mono }}>
-            react-native-reanimated
-          </ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
+    <ThemedView style={styles.container}>
+      <FlatList
+        data={filteredActivities}
+        renderItem={({ item }) => (
+          <ActivityCard
+            activity={item}
+            distance={item.distance}
+            onPress={() => {
+              // TODO: Navigate to activity detail screen
+              console.log('Activity pressed:', item.id);
+            }}
+          />
+        )}
+        keyExtractor={(item) => item.id}
+        ListHeaderComponent={renderHeader}
+        ListEmptyComponent={renderEmptyState}
+        contentContainerStyle={[
+          styles.listContent,
+          filteredActivities.length === 0 && styles.emptyListContent,
+        ]}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            tintColor={Colors[colorScheme ?? 'light'].tint}
+          />
+        }
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+      />
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
+  container: {
+    flex: 1,
   },
-  titleContainer: {
+  listContent: {
+    paddingBottom: 20,
+  },
+  emptyListContent: {
+    flexGrow: 1,
+  },
+  filtersRow: {
     flexDirection: 'row',
-    gap: 8,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingRight: 16,
+    paddingVertical: 8,
+  },
+  resultsCount: {
+    fontSize: 13,
+    opacity: 0.6,
+  },
+  emptyContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 40,
+    paddingVertical: 60,
+  },
+  emptyTitle: {
+    fontSize: 20,
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  emptyDescription: {
+    fontSize: 14,
+    opacity: 0.6,
+    textAlign: 'center',
   },
 });

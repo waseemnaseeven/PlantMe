@@ -11,4 +11,8 @@ export interface Activity {
   };
   date: string;
   address: string;
+  price: number; // Price in euros, 0 for free events
+  imageUrl: string; // URL or local path to activity image
+  capacity?: number; // Maximum number of attendees
+  attendees?: number; // Current number of attendees
 }
