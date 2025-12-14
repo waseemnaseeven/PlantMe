@@ -1,4 +1,4 @@
-import { ActivityColors } from '@/constants/theme';
+import { ActivityColors, Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Activity } from '@/types/activity';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     paddingTop: 8,
     borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
+    borderTopColor: Colors.light.border,
     gap: 4,
   },
   viewDetailsText: {

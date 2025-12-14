@@ -196,7 +196,7 @@ export default function ActivityDetailScreen() {
 
           {/* Back Button */}
           <Pressable
-            style={[styles.backButton, { backgroundColor: isDark ? '#1E1E1E' : '#FFFFFF' }]}
+            style={[styles.backButton, { backgroundColor: Colors[colorScheme ?? 'light'].cardBackground }]}
             onPress={() => router.back()}
           >
             <MaterialCommunityIcons
@@ -208,7 +208,7 @@ export default function ActivityDetailScreen() {
 
           {/* Share Button */}
           <Pressable
-            style={[styles.shareButton, { backgroundColor: isDark ? '#1E1E1E' : '#FFFFFF' }]}
+            style={[styles.shareButton, { backgroundColor: Colors[colorScheme ?? 'light'].cardBackground }]}
             onPress={handleShare}
           >
             <MaterialCommunityIcons
@@ -288,7 +288,7 @@ export default function ActivityDetailScreen() {
               <View
                 style={[
                   styles.iconContainer,
-                  { backgroundColor: isDark ? '#2A2A2A' : '#F5F5F5' },
+                  { backgroundColor: Colors[colorScheme ?? 'light'].iconBackground },
                 ]}
               >
                 <MaterialCommunityIcons
@@ -311,7 +311,7 @@ export default function ActivityDetailScreen() {
                 <View
                   style={[
                     styles.iconContainer,
-                    { backgroundColor: isDark ? '#2A2A2A' : '#F5F5F5' },
+                    { backgroundColor: Colors[colorScheme ?? 'light'].iconBackground },
                   ]}
                 >
                   <MaterialCommunityIcons
@@ -334,7 +334,7 @@ export default function ActivityDetailScreen() {
               <View
                 style={[
                   styles.iconContainer,
-                  { backgroundColor: isDark ? '#2A2A2A' : '#F5F5F5' },
+                  { backgroundColor: Colors[colorScheme ?? 'light'].iconBackground },
                 ]}
               >
                 <MaterialCommunityIcons
@@ -405,8 +405,8 @@ export default function ActivityDetailScreen() {
         style={[
           styles.bottomContainer,
           {
-            backgroundColor: isDark ? '#1E1E1E' : '#FFFFFF',
-            borderTopColor: isDark ? '#2A2A2A' : '#E0E0E0',
+            backgroundColor: Colors[colorScheme ?? 'light'].cardBackground,
+            borderTopColor: Colors[colorScheme ?? 'light'].border,
           },
         ]}
       >
@@ -453,7 +453,7 @@ const styles = StyleSheet.create({
   heroImage: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#E0E0E0',
+    backgroundColor: Colors.light.grey[200],
   },
   backButton: {
     position: 'absolute',

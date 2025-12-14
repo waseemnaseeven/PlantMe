@@ -5,12 +5,12 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import React, { useState } from 'react';
 import {
-	ActivityIndicator,
-	Alert,
-	Pressable,
-	StyleSheet,
-	TextInput,
-	View,
+  ActivityIndicator,
+  Alert,
+  Pressable,
+  StyleSheet,
+  TextInput,
+  View,
 } from 'react-native';
 import { ThemedText } from './themed-text';
 
@@ -132,7 +132,7 @@ export function LocationInput({ onLocationChange }: LocationInputProps) {
           style={[
             styles.toggleButton,
             {
-              backgroundColor: isDark ? '#2C2C2C' : '#F5F5F5',
+              backgroundColor: Colors[colorScheme ?? 'light'].inputBackground,
             },
           ]}
         >
@@ -195,7 +195,7 @@ export function LocationInput({ onLocationChange }: LocationInputProps) {
             style={[
               styles.inputContainer,
               {
-                backgroundColor: isDark ? '#2C2C2C' : '#F5F5F5',
+                backgroundColor: Colors[colorScheme ?? 'light'].inputBackground,
               },
             ]}
           >

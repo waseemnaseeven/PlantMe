@@ -11,33 +11,55 @@ const tintColorDark = '#FDAFCB';
 export const Colors = {
   light: {
     text: '#11181C',
-    background: '#fff',
+    background: '#FDF9FA',
     tint: tintColorLight,
     action: '#FDAFCB',
     actionDark: '#3E0629',
     icon: '#687076',
     tabIconDefault: '#687076',
     tabIconSelected: tintColorLight,
-    surface: '#F8F9FA',
-    border: '#E9ECEF',
-    shadow: 'rgba(0, 0, 0, 0.08)',
+    surface: '#FDF9FA',
+    border: '#F5E8EC',
+    shadow: 'rgba(62, 6, 41, 0.08)',
     gradientStart: '#FFEAED',
-    gradientEnd: '#FFFFFF',
+    gradientEnd: '#FDF9FA',
+    // Pink-tinted white and grey palette
+    cardBackground: '#FFFBFC',
+    inputBackground: '#FDF8F9',
+    iconBackground: '#FBF5F7',
+    borderLight: '#F5E8EC',
+    grey: {
+      50: '#FFFBFC',  // Very light pink-white
+      100: '#FDF8F9', // Light pink-white
+      200: '#F5E8EC', // Pink-tinted light grey
+      300: '#E8D5DC', // Soft pink-grey
+      400: '#C4A8B3', // Medium pink-grey
+      500: '#8B6B78', // Muted pink-grey
+      600: '#6B4F5C', // Deep pink-grey
+      700: '#4A3540', // Dark pink-grey
+      800: '#2D1F26', // Very dark pink-grey
+      900: '#1A1215', // Almost black with pink tint
+    },
   },
   dark: {
     text: '#ECEDEE',
-    background: '#151718',
+    background: '#1A1215',
     tint: tintColorDark,
     action: '#FDAFCB',
     actionDark: '#3E0629',
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
-    surface: '#1E1E1E',
-    border: '#2C2C2C',
-    shadow: 'rgba(0, 0, 0, 0.3)',
+    surface: '#2D1F26',
+    border: '#4A3540',
+    shadow: 'rgba(253, 175, 203, 0.15)',
     gradientStart: '#2A1F24',
-    gradientEnd: '#151718',
+    gradientEnd: '#1A1215',
+    // Pink-tinted dark palette
+    cardBackground: '#2D1F26',
+    inputBackground: '#3A2830',
+    iconBackground: '#4A3540',
+    borderLight: '#5C4450',
   },
 };
 

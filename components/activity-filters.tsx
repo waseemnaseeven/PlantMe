@@ -4,11 +4,11 @@ import { ActivityType } from '@/types/activity';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import {
-	Modal,
-	Pressable,
-	ScrollView,
-	StyleSheet,
-	View,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
 } from 'react-native';
 import { ThemedText } from './themed-text';
 import { ThemedView } from './themed-view';
@@ -97,7 +97,7 @@ export function ActivityFilters({
         style={[
           styles.filterButton,
           {
-            backgroundColor: isDark ? '#2C2C2C' : '#F5F5F5',
+            backgroundColor: Colors[colorScheme ?? 'light'].inputBackground,
           },
         ]}
       >
@@ -152,9 +152,7 @@ export function ActivityFilters({
                         {
                           backgroundColor: isSelected
                             ? ActivityColors[type.value]
-                            : isDark
-                            ? '#2C2C2C'
-                            : '#F5F5F5',
+                            : Colors[colorScheme ?? 'light'].inputBackground,
                         },
                       ]}
                     >
@@ -191,9 +189,7 @@ export function ActivityFilters({
                         {
                           backgroundColor: isSelected
                             ? Colors[colorScheme ?? 'light'].tint
-                            : isDark
-                            ? '#2C2C2C'
-                            : '#F5F5F5',
+                            : Colors[colorScheme ?? 'light'].inputBackground,
                         },
                       ]}
                     >
@@ -231,9 +227,7 @@ export function ActivityFilters({
                           {
                             backgroundColor: isSelected
                               ? Colors[colorScheme ?? 'light'].tint
-                              : isDark
-                              ? '#2C2C2C'
-                              : '#F5F5F5',
+                              : Colors[colorScheme ?? 'light'].inputBackground,
                           },
                         ]}
                       >
@@ -275,9 +269,7 @@ export function ActivityFilters({
                         {
                           backgroundColor: isSelected
                             ? Colors[colorScheme ?? 'light'].tint
-                            : isDark
-                            ? '#2C2C2C'
-                            : '#F5F5F5',
+                            : Colors[colorScheme ?? 'light'].inputBackground,
                           opacity: isDisabled ? 0.5 : 1,
                         },
                       ]}
@@ -313,7 +305,7 @@ export function ActivityFilters({
               style={[
                 styles.footerButton,
                 {
-                  backgroundColor: isDark ? '#2C2C2C' : '#F5F5F5',
+                  backgroundColor: Colors[colorScheme ?? 'light'].inputBackground,
                 },
               ]}
             >
@@ -377,7 +369,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
+    borderBottomColor: Colors.light.border,
   },
   modalContent: {
     flex: 1,
@@ -415,7 +407,7 @@ const styles = StyleSheet.create({
     padding: 20,
     gap: 12,
     borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
+    borderTopColor: Colors.light.border,
   },
   footerButton: {
     flex: 1,

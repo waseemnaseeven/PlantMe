@@ -77,7 +77,7 @@ export function ActivityCard({ activity, distance, onPress }: ActivityCardProps)
       style={({ pressed }) => [
         styles.container,
         {
-          backgroundColor: isDark ? '#1E1E1E' : '#FFFFFF',
+          backgroundColor: Colors[colorScheme ?? 'light'].cardBackground,
           opacity: pressed ? 0.7 : 1,
         },
       ]}
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: 200,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: Colors.light.grey[200],
   },
   typeBadge: {
     position: 'absolute',

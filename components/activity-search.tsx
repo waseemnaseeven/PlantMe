@@ -43,7 +43,7 @@ export function ActivitySearch({
       style={[
         styles.container,
         {
-          backgroundColor: isDark ? '#2C2C2C' : '#F5F5F5',
+          backgroundColor: Colors[colorScheme ?? 'light'].inputBackground,
         },
       ]}
     >
