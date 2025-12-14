@@ -1,9 +1,11 @@
+import { BlurView } from 'expo-blur';
 import { Tabs } from 'expo-router';
 import React from 'react';
+import { StyleSheet, View } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
+import { BorderRadius, Colors, Shadows, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function TabLayout() {
@@ -16,13 +18,38 @@ export default function TabLayout() {
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarStyle: {
-          backgroundColor: colorScheme === 'dark' 
-            ? 'rgba(21, 23, 24, 0.95)' 
-            : 'rgba(255, 255, 255, 0.95)',
           position: 'absolute',
-          borderTopWidth: 1,
-          borderTopColor: Colors[colorScheme ?? 'light'].border,
+          bottom: Spacing.lg,
+          marginHorizontal: Spacing.xl,
+          borderRadius: BorderRadius.full,
+          height: 56,
+          paddingBottom: 4,
+          paddingTop: 4,
+          ...Shadows.lg,
+          borderTopWidth: 0,
+          overflow: 'hidden',
+          backgroundColor: 'transparent',
         },
+        tabBarBackground: () => (
+          <View style={StyleSheet.absoluteFill}>
+            <BlurView
+              intensity={80}
+              tint={colorScheme === 'dark' ? 'dark' : 'light'}
+              style={StyleSheet.absoluteFill}
+            />
+            <View
+              style={[
+                StyleSheet.absoluteFill,
+                {
+                  backgroundColor:
+                    colorScheme === 'dark'
+                      ? 'rgba(45, 31, 38, 0.3)'
+                      : 'rgba(255, 255, 255, 0.3)',
+                },
+              ]}
+            />
+          </View>
+        ),
         sceneStyle: { backgroundColor: 'transparent' },
       }}>
       <Tabs.Screen
