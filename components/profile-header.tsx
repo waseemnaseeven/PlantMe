@@ -106,7 +106,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
           <MaterialCommunityIcons
             name="calendar-check"
             size={24}
-            color={GamificationColors.achievement}
+            color={Colors[colorScheme ?? 'light'].icon}
           />
           <ThemedText type="defaultSemiBold" style={styles.statValue}>
             {profile.stats.activitiesAttended}
@@ -120,7 +120,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
           <MaterialCommunityIcons
             name="fire"
             size={24}
-            color={GamificationColors.streak}
+            color={Colors[colorScheme ?? 'light'].icon}
           />
           <ThemedText type="defaultSemiBold" style={styles.statValue}>
             {profile.stats.currentStreak}
@@ -134,7 +134,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
           <MaterialCommunityIcons
             name="trophy"
             size={24}
-            color={GamificationColors.achievement}
+            color={Colors[colorScheme ?? 'light'].icon}
           />
           <ThemedText type="defaultSemiBold" style={styles.statValue}>
             {profile.achievements.filter(a => a.unlockedAt).length}
@@ -148,7 +148,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    padding: 24,
     borderRadius: 16,
     marginHorizontal: 16,
     marginTop: 16,
@@ -161,12 +161,12 @@ const styles = StyleSheet.create({
   avatarSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 24,
   },
   avatarContainer: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
+    width: 88,
+    height: 88,
+    borderRadius: 44,
     borderWidth: 3,
     alignItems: 'center',
     justifyContent: 'center',
@@ -177,22 +177,22 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 24,
-    marginBottom: 4,
+    marginBottom: 8,
   },
   bio: {
     fontSize: 14,
     opacity: 0.7,
-    lineHeight: 18,
+    lineHeight: 20,
   },
   levelBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
+    padding: 16,
     borderRadius: 12,
-    marginBottom: 16,
+    marginBottom: 24,
   },
   levelInfo: {
-    marginLeft: 12,
+    marginLeft: 16,
   },
   levelTitle: {
     fontSize: 16,
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     opacity: 0.9,
   },
   progressSection: {
-    marginBottom: 16,
+    marginBottom: 24,
   },
   pointsRow: {
     flexDirection: 'row',
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
   pointsText: {
     fontSize: 16,
     fontWeight: '600',
-    marginLeft: 6,
+    marginLeft: 8,
   },
   pointsNeeded: {
     fontSize: 12,
@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    paddingTop: 16,
+    paddingTop: 24,
     borderTopWidth: 1,
     borderTopColor: '#00000010',
   },
@@ -247,12 +247,12 @@ const styles = StyleSheet.create({
   },
   statValue: {
     fontSize: 20,
-    marginTop: 4,
+    marginTop: 8,
   },
   statLabel: {
     fontSize: 12,
     opacity: 0.6,
-    marginTop: 2,
+    marginTop: 4,
   },
   statDivider: {
     width: 1,

@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 20,
+    paddingBottom: 24,
   },
   topBar: {
     flexDirection: 'row',
@@ -305,10 +305,10 @@ const styles = StyleSheet.create({
   },
   fabContainer: {
     position: 'absolute',
-    bottom: 30,
-    right: 20,
+    bottom: 32,
+    right: 24,
     flexDirection: 'row',
-    gap: 12,
+    gap: 16,
   },
   fabButton: {
     width: 56,
@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
     // Main save button keeps default size
   },
   infoCard: {
-    padding: 16,
+    padding: 24,
     borderRadius: 16,
     marginHorizontal: 16,
     marginTop: 16,
@@ -348,11 +348,11 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 14,
-    marginLeft: 12,
+    marginLeft: 16,
     opacity: 0.8,
   },
   settingsCard: {
-    padding: 16,
+    padding: 24,
     borderRadius: 16,
     marginHorizontal: 16,
     marginTop: 16,
@@ -364,13 +364,14 @@ const styles = StyleSheet.create({
   },
   settingsTitle: {
     fontSize: 16,
-    marginBottom: 12,
+    marginBottom: 16,
   },
   settingRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
+    paddingVertical: 16,
+    minHeight: 56,
     borderBottomWidth: 1,
     borderBottomColor: '#00000010',
   },
@@ -380,9 +381,9 @@ const styles = StyleSheet.create({
   },
   settingText: {
     fontSize: 14,
-    marginLeft: 12,
+    marginLeft: 16,
   },
   bottomPadding: {
-    height: 40,
+    height: 48,
   },
 });

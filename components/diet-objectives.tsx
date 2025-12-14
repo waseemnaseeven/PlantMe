@@ -85,14 +85,20 @@ export function DietObjectives({
       </ThemedText>
 
       {/* Current Selection Display */}
-      <View style={[styles.currentSelection, { backgroundColor: currentLevel.color + '20', borderColor: currentLevel.color }]}>
+      <View style={[
+        styles.currentSelection,
+        {
+          backgroundColor: Colors[colorScheme ?? 'light'].tint + '10',
+          borderColor: Colors[colorScheme ?? 'light'].tint + '30',
+        }
+      ]}>
         <MaterialCommunityIcons
           name={currentLevel.icon as any}
-          size={48}
-          color={currentLevel.color}
+          size={40}
+          color={Colors[colorScheme ?? 'light'].tint}
         />
         <View style={styles.currentInfo}>
-          <ThemedText type="defaultSemiBold" style={[styles.currentLabel, { color: currentLevel.color }]}>
+          <ThemedText type="defaultSemiBold" style={styles.currentLabel}>
             {currentLevel.label}
           </ThemedText>
           <ThemedText style={styles.currentDescription}>
@@ -110,9 +116,9 @@ export function DietObjectives({
           step={1}
           value={currentValue}
           onValueChange={handleSliderChange}
-          minimumTrackTintColor={currentLevel.color}
+          minimumTrackTintColor={Colors[colorScheme ?? 'light'].tint}
           maximumTrackTintColor={Colors[colorScheme ?? 'light'].icon + '30'}
-          thumbTintColor={currentLevel.color}
+          thumbTintColor={Colors[colorScheme ?? 'light'].tint}
         />
       </View>
 
@@ -124,7 +130,9 @@ export function DietObjectives({
               style={[
                 styles.labelDot,
                 {
-                  backgroundColor: currentValue >= level.value ? level.color : Colors[colorScheme ?? 'light'].icon + '30',
+                  backgroundColor: currentValue >= level.value 
+                    ? Colors[colorScheme ?? 'light'].tint 
+                    : Colors[colorScheme ?? 'light'].icon + '30',
                 },
               ]}
             />
@@ -132,7 +140,6 @@ export function DietObjectives({
               style={[
                 styles.labelText,
                 currentValue === level.value && styles.labelTextActive,
-                currentValue === level.value && { color: level.color },
               ]}
             >
               {level.label}
@@ -158,7 +165,7 @@ export function DietObjectives({
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    padding: 24,
     borderRadius: 16,
     marginHorizontal: 16,
     marginTop: 16,
@@ -179,29 +186,29 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 14,
     opacity: 0.7,
-    marginBottom: 16,
+    marginBottom: 24,
   },
   currentSelection: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
     borderRadius: 12,
-    borderWidth: 2,
-    marginBottom: 20,
+    borderWidth: 1,
+    marginBottom: 24,
   },
   currentInfo: {
     flex: 1,
     marginLeft: 16,
   },
   currentLabel: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '600',
     marginBottom: 4,
   },
   currentDescription: {
     fontSize: 14,
     opacity: 0.8,
-    lineHeight: 18,
+    lineHeight: 20,
   },
   sliderContainer: {
     paddingHorizontal: 8,
@@ -214,7 +221,7 @@ const styles = StyleSheet.create({
   labelsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 4,
+    paddingHorizontal: 8,
     marginBottom: 16,
   },
   labelItem: {
@@ -225,7 +232,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    marginBottom: 6,
+    marginBottom: 8,
   },
   labelText: {
     fontSize: 11,
@@ -240,13 +247,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 12,
+    paddingTop: 16,
     borderTopWidth: 1,
     borderTopColor: '#00000010',
   },
   progressText: {
     fontSize: 13,
     opacity: 0.7,
-    marginLeft: 6,
+    marginLeft: 8,
   },
 });

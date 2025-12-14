@@ -1,6 +1,6 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors, ProfileColors } from '@/constants/theme';
+import { Colors } from '@/constants/theme';
 import { ECONOMIC_OPTIONS, GEOGRAPHIC_OPTIONS } from '@/data/profile';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Constraints } from '@/types/profile';
@@ -48,43 +48,62 @@ export function ConstraintsSelector({
         <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>
           Economic Situation
         </ThemedText>
-        <View style={styles.optionsRow}>
+        <View style={styles.radioGroup}>
           {ECONOMIC_OPTIONS.map((option) => {
             const isSelected = constraints.economic === option.value;
-            const color = ProfileColors.economic[option.value];
 
             return (
               <Pressable
                 key={option.value}
                 onPress={() => updateConstraint('economic', option.value)}
                 style={({ pressed }) => [
-                  styles.optionCard,
-                  isSelected && styles.optionCardSelected,
+                  styles.radioOption,
                   {
-                    backgroundColor: isSelected
-                      ? color + '20'
-                      : Colors[colorScheme ?? 'light'].background,
-                    borderColor: isSelected
-                      ? color
-                      : Colors[colorScheme ?? 'light'].icon + '30',
                     opacity: pressed ? 0.7 : 1,
                   },
                 ]}
               >
+                <View
+                  style={[
+                    styles.radioCircle,
+                    {
+                      borderColor: isSelected
+                        ? Colors[colorScheme ?? 'light'].tint
+                        : Colors[colorScheme ?? 'light'].icon + '40',
+                    },
+                  ]}
+                >
+                  {isSelected && (
+                    <View
+                      style={[
+                        styles.radioCircleInner,
+                        {
+                          backgroundColor: Colors[colorScheme ?? 'light'].tint,
+                        },
+                      ]}
+                    />
+                  )}
+                </View>
                 <MaterialCommunityIcons
                   name={option.icon as any}
-                  size={24}
-                  color={isSelected ? color : Colors[colorScheme ?? 'light'].icon}
+                  size={20}
+                  color={isSelected ? Colors[colorScheme ?? 'light'].tint : Colors[colorScheme ?? 'light'].icon}
+                  style={styles.radioIcon}
                 />
-                <ThemedText
-                  type="defaultSemiBold"
-                  style={[styles.optionLabel, isSelected && { color }]}
-                >
-                  {option.label}
-                </ThemedText>
-                <ThemedText style={styles.optionDescription} numberOfLines={2}>
-                  {option.description}
-                </ThemedText>
+                <View style={styles.radioTextContainer}>
+                  <ThemedText
+                    type="defaultSemiBold"
+                    style={[
+                      styles.radioLabel,
+                      isSelected && { color: Colors[colorScheme ?? 'light'].tint }
+                    ]}
+                  >
+                    {option.label}
+                  </ThemedText>
+                  <ThemedText style={styles.radioDescription}>
+                    {option.description}
+                  </ThemedText>
+                </View>
               </Pressable>
             );
           })}
@@ -96,43 +115,62 @@ export function ConstraintsSelector({
         <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>
           Geographic Preference
         </ThemedText>
-        <View style={styles.optionsRow}>
+        <View style={styles.radioGroup}>
           {GEOGRAPHIC_OPTIONS.map((option) => {
             const isSelected = constraints.geographic === option.value;
-            const color = ProfileColors.geographic[option.value];
 
             return (
               <Pressable
                 key={option.value}
                 onPress={() => updateConstraint('geographic', option.value)}
                 style={({ pressed }) => [
-                  styles.optionCard,
-                  isSelected && styles.optionCardSelected,
+                  styles.radioOption,
                   {
-                    backgroundColor: isSelected
-                      ? color + '20'
-                      : Colors[colorScheme ?? 'light'].background,
-                    borderColor: isSelected
-                      ? color
-                      : Colors[colorScheme ?? 'light'].icon + '30',
                     opacity: pressed ? 0.7 : 1,
                   },
                 ]}
               >
+                <View
+                  style={[
+                    styles.radioCircle,
+                    {
+                      borderColor: isSelected
+                        ? Colors[colorScheme ?? 'light'].tint
+                        : Colors[colorScheme ?? 'light'].icon + '40',
+                    },
+                  ]}
+                >
+                  {isSelected && (
+                    <View
+                      style={[
+                        styles.radioCircleInner,
+                        {
+                          backgroundColor: Colors[colorScheme ?? 'light'].tint,
+                        },
+                      ]}
+                    />
+                  )}
+                </View>
                 <MaterialCommunityIcons
                   name={option.icon as any}
-                  size={24}
-                  color={isSelected ? color : Colors[colorScheme ?? 'light'].icon}
+                  size={20}
+                  color={isSelected ? Colors[colorScheme ?? 'light'].tint : Colors[colorScheme ?? 'light'].icon}
+                  style={styles.radioIcon}
                 />
-                <ThemedText
-                  type="defaultSemiBold"
-                  style={[styles.optionLabel, isSelected && { color }]}
-                >
-                  {option.label}
-                </ThemedText>
-                <ThemedText style={styles.optionDescription} numberOfLines={2}>
-                  {option.description}
-                </ThemedText>
+                <View style={styles.radioTextContainer}>
+                  <ThemedText
+                    type="defaultSemiBold"
+                    style={[
+                      styles.radioLabel,
+                      isSelected && { color: Colors[colorScheme ?? 'light'].tint }
+                    ]}
+                  >
+                    {option.label}
+                  </ThemedText>
+                  <ThemedText style={styles.radioDescription}>
+                    {option.description}
+                  </ThemedText>
+                </View>
               </Pressable>
             );
           })}
@@ -231,7 +269,7 @@ export function ConstraintsSelector({
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    padding: 24,
     borderRadius: 16,
     marginHorizontal: 16,
     marginTop: 16,
@@ -252,48 +290,61 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 14,
     opacity: 0.7,
-    marginBottom: 16,
+    marginBottom: 24,
   },
   section: {
-    marginBottom: 20,
+    marginBottom: 24,
   },
   sectionTitle: {
     fontSize: 16,
-    marginBottom: 12,
+    marginBottom: 16,
   },
-  optionsRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+  radioGroup: {
     gap: 12,
   },
-  optionCard: {
-    width: '30%',
-    padding: 12,
+  radioOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    backgroundColor: 'transparent',
+  },
+  radioCircle: {
+    width: 24,
+    height: 24,
     borderRadius: 12,
     borderWidth: 2,
+    justifyContent: 'center',
     alignItems: 'center',
-    minHeight: 120,
+    marginRight: 12,
   },
-  optionCardSelected: {
-    borderWidth: 2,
+  radioCircleInner: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
   },
-  optionLabel: {
-    fontSize: 14,
-    marginTop: 8,
-    textAlign: 'center',
+  radioIcon: {
+    marginRight: 12,
   },
-  optionDescription: {
-    fontSize: 11,
-    opacity: 0.7,
-    marginTop: 4,
-    textAlign: 'center',
-    lineHeight: 14,
+  radioTextContainer: {
+    flex: 1,
+  },
+  radioLabel: {
+    fontSize: 15,
+    marginBottom: 2,
+  },
+  radioDescription: {
+    fontSize: 13,
+    opacity: 0.6,
+    lineHeight: 18,
   },
   toggleRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
+    paddingVertical: 16,
+    minHeight: 64,
     borderBottomWidth: 1,
     borderBottomColor: '#00000010',
   },
@@ -301,15 +352,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
+    paddingRight: 16,
   },
   toggleText: {
-    marginLeft: 12,
+    marginLeft: 16,
     flex: 1,
   },
   toggleDescription: {
     fontSize: 12,
     opacity: 0.6,
-    marginTop: 2,
+    marginTop: 4,
   },
   tagsContainer: {
     flexDirection: 'row',
@@ -317,8 +369,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   tag: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     borderRadius: 16,
   },
   tagText: {

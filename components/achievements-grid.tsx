@@ -36,11 +36,11 @@ export function AchievementsGrid({ achievements, maxDisplay }: AchievementsGridP
           styles.achievementCard,
           {
             backgroundColor: isUnlocked
-              ? rarityColor + '20'
+              ? Colors[colorScheme ?? 'light'].tint + '10'
               : Colors[colorScheme ?? 'light'].background,
             borderColor: isUnlocked
-              ? rarityColor
-              : Colors[colorScheme ?? 'light'].icon + '30',
+              ? Colors[colorScheme ?? 'light'].tint + '30'
+              : Colors[colorScheme ?? 'light'].icon + '20',
             opacity: pressed ? 0.7 : isUnlocked ? 1 : 0.5,
           },
         ]}
@@ -49,7 +49,7 @@ export function AchievementsGrid({ achievements, maxDisplay }: AchievementsGridP
           <MaterialCommunityIcons
             name={isUnlocked ? (achievement.icon as any) : 'lock'}
             size={32}
-            color={isUnlocked ? rarityColor : Colors[colorScheme ?? 'light'].icon}
+            color={isUnlocked ? Colors[colorScheme ?? 'light'].tint : Colors[colorScheme ?? 'light'].icon}
           />
           {isUnlocked && (
             <View style={[styles.rarityBadge, { backgroundColor: rarityColor }]}>
@@ -70,8 +70,8 @@ export function AchievementsGrid({ achievements, maxDisplay }: AchievementsGridP
 
         {isUnlocked && achievement.points > 0 && (
           <View style={styles.pointsBadge}>
-            <MaterialCommunityIcons name="star" size={12} color={rarityColor} />
-            <ThemedText style={[styles.pointsText, { color: rarityColor }]}>
+            <MaterialCommunityIcons name="star" size={12} color={Colors[colorScheme ?? 'light'].tint} />
+            <ThemedText style={[styles.pointsText, { color: Colors[colorScheme ?? 'light'].tint }]}>
               +{achievement.points}
             </ThemedText>
           </View>
@@ -238,7 +238,7 @@ export function AchievementsGrid({ achievements, maxDisplay }: AchievementsGridP
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    padding: 24,
     borderRadius: 16,
     marginHorizontal: 16,
     marginTop: 16,
@@ -262,8 +262,8 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   statsChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     borderRadius: 12,
     backgroundColor: '#00000010',
   },
@@ -273,14 +273,16 @@ const styles = StyleSheet.create({
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
+    gap: 8,
   },
   achievementCard: {
-    width: '30%',
+    flex: 1,
+    minWidth: '30%',
+    maxWidth: '32%',
     aspectRatio: 1,
-    padding: 12,
+    padding: 16,
     borderRadius: 12,
-    borderWidth: 2,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -305,7 +307,7 @@ const styles = StyleSheet.create({
   achievementTitle: {
     fontSize: 11,
     textAlign: 'center',
-    lineHeight: 14,
+    lineHeight: 16,
   },
   pointsBadge: {
     flexDirection: 'row',
@@ -321,7 +323,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     opacity: 0.6,
     textAlign: 'center',
-    marginTop: 12,
+    marginTop: 16,
   },
   modalOverlay: {
     flex: 1,
@@ -347,22 +349,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   modalBody: {
-    padding: 20,
+    padding: 24,
   },
   modalTitleRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   modalTitle: {
     flex: 1,
     fontSize: 24,
-    marginRight: 12,
+    marginRight: 16,
   },
   rarityChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     borderRadius: 12,
   },
   rarityChipText: {
@@ -373,7 +375,7 @@ const styles = StyleSheet.create({
   modalDescription: {
     fontSize: 16,
     opacity: 0.8,
-    lineHeight: 22,
+    lineHeight: 24,
     marginBottom: 16,
   },
   modalPoints: {
@@ -388,12 +390,12 @@ const styles = StyleSheet.create({
   modalUnlocked: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 24,
   },
   modalUnlockedText: {
     fontSize: 14,
     opacity: 0.7,
-    marginLeft: 6,
+    marginLeft: 8,
   },
   closeButton: {
     padding: 16,
