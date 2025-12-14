@@ -11,29 +11,34 @@ import { Modal, Pressable, StyleSheet, View } from 'react-native';
 interface AchievementsGridProps {
   achievements: Achievement[];
   maxDisplay?: number;
+  compact?: boolean;
 }
 
-export function AchievementsGrid({ achievements, maxDisplay }: AchievementsGridProps) {
+export function AchievementsGrid({ achievements, maxDisplay, compact = false }: AchievementsGridProps) {
   const colorScheme = useColorScheme();
   const [selectedAchievement, setSelectedAchievement] = useState<Achievement | null>(null);
 
   const unlockedAchievements = achievements.filter(a => a.unlockedAt);
   const lockedAchievements = achievements.filter(a => !a.unlockedAt);
 
-  const displayAchievements = maxDisplay
-    ? [...unlockedAchievements.slice(0, maxDisplay), ...lockedAchievements.slice(0, Math.max(0, maxDisplay - unlockedAchievements.length))]
-    : achievements;
+  const displayAchievements = compact
+    ? unlockedAchievements.slice(0, maxDisplay ?? unlockedAchievements.length)
+    : maxDisplay
+      ? [...unlockedAchievements.slice(0, maxDisplay), ...lockedAchievements.slice(0, Math.max(0, maxDisplay - unlockedAchievements.length))]
+      : achievements;
 
   const renderAchievement = (achievement: Achievement) => {
     const isUnlocked = !!achievement.unlockedAt;
     const rarityColor = getAchievementRarityColor(achievement.rarity);
+    const showModal = !compact;
 
     return (
       <Pressable
         key={achievement.id}
-        onPress={() => setSelectedAchievement(achievement)}
+        disabled={!showModal}
+        onPress={showModal ? () => setSelectedAchievement(achievement) : undefined}
         style={({ pressed }) => [
-          styles.achievementCard,
+          compact ? styles.achievementCardCompact : styles.achievementCard,
           {
             backgroundColor: isUnlocked
               ? Colors[colorScheme ?? 'light'].tint + '10'
@@ -51,7 +56,7 @@ export function AchievementsGrid({ achievements, maxDisplay }: AchievementsGridP
             size={32}
             color={isUnlocked ? Colors[colorScheme ?? 'light'].tint : Colors[colorScheme ?? 'light'].icon}
           />
-          {isUnlocked && (
+          {isUnlocked && !compact && (
             <View style={[styles.rarityBadge, { backgroundColor: rarityColor }]}>
               <ThemedText style={styles.rarityText} lightColor="#fff" darkColor="#fff">
                 {achievement.rarity[0].toUpperCase()}
@@ -68,7 +73,7 @@ export function AchievementsGrid({ achievements, maxDisplay }: AchievementsGridP
           {isUnlocked ? achievement.title : '???'}
         </ThemedText>
 
-        {isUnlocked && achievement.points > 0 && (
+        {isUnlocked && achievement.points > 0 && !compact && (
           <View style={styles.pointsBadge}>
             <MaterialCommunityIcons name="star" size={12} color={Colors[colorScheme ?? 'light'].tint} />
             <ThemedText style={[styles.pointsText, { color: Colors[colorScheme ?? 'light'].tint }]}>
@@ -111,127 +116,129 @@ export function AchievementsGrid({ achievements, maxDisplay }: AchievementsGridP
       )}
 
       {/* Achievement Detail Modal */}
-      <Modal
-        visible={selectedAchievement !== null}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setSelectedAchievement(null)}
-      >
-        <Pressable
-          style={styles.modalOverlay}
-          onPress={() => setSelectedAchievement(null)}
+      {!compact && (
+        <Modal
+          visible={selectedAchievement !== null}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setSelectedAchievement(null)}
         >
           <Pressable
-            style={[
-              styles.modalContent,
-              { backgroundColor: Colors[colorScheme ?? 'light'].background },
-            ]}
-            onPress={(e) => e.stopPropagation()}
+            style={styles.modalOverlay}
+            onPress={() => setSelectedAchievement(null)}
           >
-            {selectedAchievement && (
-              <>
-                <View
-                  style={[
-                    styles.modalHeader,
-                    {
-                      backgroundColor: getAchievementRarityColor(
-                        selectedAchievement.rarity
-                      ),
-                    },
-                  ]}
-                >
-                  <MaterialCommunityIcons
-                    name={
-                      selectedAchievement.unlockedAt
-                        ? (selectedAchievement.icon as any)
-                        : 'lock'
-                    }
-                    size={64}
-                    color="#fff"
-                  />
-                </View>
+            <Pressable
+              style={[
+                styles.modalContent,
+                { backgroundColor: Colors[colorScheme ?? 'light'].background },
+              ]}
+              onPress={(e) => e.stopPropagation()}
+            >
+              {selectedAchievement && (
+                <>
+                  <View
+                    style={[
+                      styles.modalHeader,
+                      {
+                        backgroundColor: getAchievementRarityColor(
+                          selectedAchievement.rarity
+                        ),
+                      },
+                    ]}
+                  >
+                    <MaterialCommunityIcons
+                      name={
+                        selectedAchievement.unlockedAt
+                          ? (selectedAchievement.icon as any)
+                          : 'lock'
+                      }
+                      size={64}
+                      color="#fff"
+                    />
+                  </View>
 
-                <View style={styles.modalBody}>
-                  <View style={styles.modalTitleRow}>
-                    <ThemedText type="title" style={styles.modalTitle}>
+                  <View style={styles.modalBody}>
+                    <View style={styles.modalTitleRow}>
+                      <ThemedText type="title" style={styles.modalTitle}>
+                        {selectedAchievement.unlockedAt
+                          ? selectedAchievement.title
+                          : 'Locked Achievement'}
+                      </ThemedText>
+                      <View
+                        style={[
+                          styles.rarityChip,
+                          {
+                            backgroundColor: getAchievementRarityColor(
+                              selectedAchievement.rarity
+                            ),
+                          },
+                        ]}
+                      >
+                        <ThemedText
+                          style={styles.rarityChipText}
+                          lightColor="#fff"
+                          darkColor="#fff"
+                        >
+                          {selectedAchievement.rarity}
+                        </ThemedText>
+                      </View>
+                    </View>
+
+                    <ThemedText style={styles.modalDescription}>
                       {selectedAchievement.unlockedAt
-                        ? selectedAchievement.title
-                        : 'Locked Achievement'}
+                        ? selectedAchievement.description
+                        : 'Complete the required actions to unlock this achievement'}
                     </ThemedText>
-                    <View
+
+                    {selectedAchievement.points > 0 && (
+                      <View style={styles.modalPoints}>
+                        <MaterialCommunityIcons
+                          name="star-circle"
+                          size={20}
+                          color={getAchievementRarityColor(selectedAchievement.rarity)}
+                        />
+                        <ThemedText type="defaultSemiBold" style={styles.modalPointsText}>
+                          +{selectedAchievement.points}
+                        </ThemedText>
+                      </View>
+                    )}
+
+                    {selectedAchievement.unlockedAt && (
+                      <View style={styles.modalUnlocked}>
+                        <MaterialCommunityIcons
+                          name="check-circle"
+                          size={16}
+                          color={Colors[colorScheme ?? 'light'].tint}
+                        />
+                        <ThemedText style={styles.modalUnlockedText}>
+                          Unlocked on{' '}
+                          {new Date(selectedAchievement.unlockedAt).toLocaleDateString()}
+                        </ThemedText>
+                      </View>
+                    )}
+
+                    <Pressable
                       style={[
-                        styles.rarityChip,
-                        {
-                          backgroundColor: getAchievementRarityColor(
-                            selectedAchievement.rarity
-                          ),
-                        },
+                        styles.closeButton,
+                        { backgroundColor: Colors[colorScheme ?? 'light'].tint },
                       ]}
+                      onPress={() => setSelectedAchievement(null)}
                     >
                       <ThemedText
-                        style={styles.rarityChipText}
+                        style={styles.closeButtonText}
                         lightColor="#fff"
                         darkColor="#fff"
                       >
-                        {selectedAchievement.rarity}
+                        Close
                       </ThemedText>
-                    </View>
+                    </Pressable>
                   </View>
-
-                  <ThemedText style={styles.modalDescription}>
-                    {selectedAchievement.unlockedAt
-                      ? selectedAchievement.description
-                      : 'Complete the required actions to unlock this achievement'}
-                  </ThemedText>
-
-                  {selectedAchievement.points > 0 && (
-                    <View style={styles.modalPoints}>
-                      <MaterialCommunityIcons
-                        name="star-circle"
-                        size={20}
-                        color={getAchievementRarityColor(selectedAchievement.rarity)}
-                      />
-                      <ThemedText type="defaultSemiBold" style={styles.modalPointsText}>
-                        +{selectedAchievement.points} points
-                      </ThemedText>
-                    </View>
-                  )}
-
-                  {selectedAchievement.unlockedAt && (
-                    <View style={styles.modalUnlocked}>
-                      <MaterialCommunityIcons
-                        name="check-circle"
-                        size={16}
-                        color={Colors[colorScheme ?? 'light'].tint}
-                      />
-                      <ThemedText style={styles.modalUnlockedText}>
-                        Unlocked on{' '}
-                        {new Date(selectedAchievement.unlockedAt).toLocaleDateString()}
-                      </ThemedText>
-                    </View>
-                  )}
-
-                  <Pressable
-                    style={[
-                      styles.closeButton,
-                      { backgroundColor: Colors[colorScheme ?? 'light'].tint },
-                    ]}
-                    onPress={() => setSelectedAchievement(null)}
-                  >
-                    <ThemedText
-                      style={styles.closeButtonText}
-                      lightColor="#fff"
-                      darkColor="#fff"
-                    >
-                      Close
-                    </ThemedText>
-                  </Pressable>
-                </View>
-              </>
-            )}
+                </>
+              )}
+            </Pressable>
           </Pressable>
-        </Pressable>
-      </Modal>
+        </Modal>
+      )}
     </ThemedView>
   );
 }
@@ -285,6 +292,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  achievementCardCompact: {
+    flex: 1,
+    minWidth: '30%',
+    maxWidth: '32%',
+    aspectRatio: 1,
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
   },
   achievementIconContainer: {
     position: 'relative',

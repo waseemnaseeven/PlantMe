@@ -6,7 +6,7 @@ import { StatsCard } from '@/components/stats-card';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
-import { ALL_ACHIEVEMENTS, mockUserProfile } from '@/data/profile';
+import { ALL_ACHIEVEMENTS, DIET_OBJECTIVES, GEOGRAPHIC_OPTIONS, mockUserProfile } from '@/data/profile';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Constraints, DietObjectiveType, UserProfile } from '@/types/profile';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -17,6 +17,7 @@ import {
   RefreshControl,
   ScrollView,
   StyleSheet,
+  Switch,
   View,
 } from 'react-native';
 
@@ -32,7 +33,9 @@ export default function ProfileScreen() {
   useEffect(() => {
     const profileChanged = 
       profile.dietObjective !== originalProfile.dietObjective ||
-      JSON.stringify(profile.constraints) !== JSON.stringify(originalProfile.constraints);
+      JSON.stringify(profile.constraints) !== JSON.stringify(originalProfile.constraints) ||
+      profile.notificationsEnabled !== originalProfile.notificationsEnabled ||
+      profile.shareProgressPublicly !== originalProfile.shareProgressPublicly;
     
     setHasChanges(profileChanged);
 
@@ -43,7 +46,7 @@ export default function ProfileScreen() {
       tension: 50,
       friction: 7,
     }).start();
-  }, [profile, originalProfile]);
+  }, [profile, originalProfile, fabAnimation]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -66,6 +69,20 @@ export default function ProfileScreen() {
     });
   };
 
+  const handleNotificationsToggle = (enabled: boolean) => {
+    setProfile({
+      ...profile,
+      notificationsEnabled: enabled,
+    });
+  };
+
+  const handleShareProgressToggle = (enabled: boolean) => {
+    setProfile({
+      ...profile,
+      shareProgressPublicly: enabled,
+    });
+  };
+
   const handleSave = () => {
     // In a real app, you would save to backend here
     setOriginalProfile(profile);
@@ -84,6 +101,20 @@ export default function ProfileScreen() {
     );
     return userAchievement || achievement;
   });
+
+  const dietObjectiveLabel =
+    DIET_OBJECTIVES.find((objective) => objective.id === profile.dietObjective)
+      ?.title ?? 'Custom goal';
+  const dietObjectiveDescription =
+    DIET_OBJECTIVES.find((objective) => objective.id === profile.dietObjective)
+      ?.description ?? 'Personalized balance';
+  const geographicLabel =
+    GEOGRAPHIC_OPTIONS.find((option) => option.value === profile.constraints.geographic)
+      ?.label ?? 'Open to all';
+  const restrictionsLabel =
+    profile.constraints.dietaryRestrictions.length > 0
+      ? profile.constraints.dietaryRestrictions.join(' • ')
+      : 'No restrictions set';
 
   return (
     <ThemedView style={[styles.container, { backgroundColor: 'transparent' }]}>
@@ -108,6 +139,76 @@ export default function ProfileScreen() {
         {/* Profile Header with Gamification */}
         <ProfileHeader profile={profile} />
 
+        {/* Diet focus & impact */}
+        <ThemedView style={styles.focusCard}>
+          <View style={styles.focusHeader}>
+            <MaterialCommunityIcons
+              name="food-apple"
+              size={24}
+              color={Colors[colorScheme ?? 'light'].tint}
+            />
+            <ThemedText type="subtitle" style={styles.focusTitle}>
+              Current Diet
+            </ThemedText>
+          </View>
+
+          <View style={styles.focusRow}>
+            <MaterialCommunityIcons
+              name="target-variant"
+              size={20}
+              color={Colors[colorScheme ?? 'light'].icon}
+            />
+            <View style={styles.focusCopy}>
+              <ThemedText type="defaultSemiBold">{dietObjectiveLabel}</ThemedText>
+              <ThemedText style={styles.focusDescription}>{dietObjectiveDescription}</ThemedText>
+            </View>
+          </View>
+
+          <View style={styles.focusRow}>
+            <MaterialCommunityIcons
+              name="map-marker-radius"
+              size={20}
+              color={Colors[colorScheme ?? 'light'].icon}
+            />
+            <View style={styles.focusCopy}>
+              <ThemedText type="defaultSemiBold">Approvisionnement</ThemedText>
+              <ThemedText style={styles.focusDescription}>
+                {geographicLabel}
+                {profile.constraints.preferLocal ? ' • Local' : ''}
+                {profile.constraints.preferSeasonal ? ' • Saisonnier' : ''}
+              </ThemedText>
+            </View>
+          </View>
+
+          <View style={[styles.focusRow, styles.focusImpactRow]}>
+            <MaterialCommunityIcons
+              name="leaf"
+              size={22}
+              color={Colors[colorScheme ?? 'light'].tint}
+            />
+            <View style={styles.focusCopy}>
+              <ThemedText type="defaultSemiBold">Impact</ThemedText>
+              <ThemedText style={styles.focusDescription}>
+                CO₂ évité : {profile.stats.co2Saved}kg • {profile.stats.currentStreak} jours d&apos;élan
+              </ThemedText>
+              <ThemedText style={styles.focusSubNote}>
+                ~{Math.round(profile.stats.co2Saved * 4.5)} km non parcourus en voiture
+              </ThemedText>
+            </View>
+          </View>
+
+          {profile.constraints.dietaryRestrictions.length > 0 && (
+            <View style={styles.focusRow}>
+              <MaterialCommunityIcons
+                name="shield-check"
+                size={20}
+                color={Colors[colorScheme ?? 'light'].icon}
+              />
+              <ThemedText style={styles.focusDescription}>{restrictionsLabel}</ThemedText>
+            </View>
+          )}
+        </ThemedView>
+
         {/* Diet Objectives Section */}
         <DietObjectives
           selectedObjective={profile.dietObjective}
@@ -123,7 +224,8 @@ export default function ProfileScreen() {
         {/* Achievements Section */}
         <AchievementsGrid
           achievements={allAchievementsWithStatus}
-          maxDisplay={9}
+          maxDisplay={6}
+          compact
         />
 
         {/* Stats Section */}
@@ -153,6 +255,19 @@ export default function ProfileScreen() {
             />
             <ThemedText style={styles.infoText}>{profile.email}</ThemedText>
           </View>
+
+          <View style={styles.infoRow}>
+            <MaterialCommunityIcons
+              name="map-marker"
+              size={20}
+              color={Colors[colorScheme ?? 'light'].icon}
+            />
+            <ThemedText style={styles.infoText}>
+              {geographicLabel} sourcing
+              {profile.constraints.preferLocal ? ' • Local-first' : ''}
+              {profile.constraints.preferSeasonal ? ' • Seasonal' : ''}
+            </ThemedText>
+          </View>
         </ThemedView>
 
         {/* Settings Shortcuts */}
@@ -161,47 +276,63 @@ export default function ProfileScreen() {
             Quick Settings
           </ThemedText>
 
-          <Pressable
-            style={({ pressed }) => [
-              styles.settingRow,
-              { opacity: pressed ? 0.7 : 1 },
-            ]}
-          >
+          <View style={styles.settingRow}>
             <View style={styles.settingLeft}>
               <MaterialCommunityIcons
                 name="bell"
                 size={20}
                 color={Colors[colorScheme ?? 'light'].icon}
               />
-              <ThemedText style={styles.settingText}>Notifications</ThemedText>
+              <View style={styles.settingCopy}>
+                <ThemedText style={styles.settingText}>Notifications</ThemedText>
+                <ThemedText style={styles.settingDescription}>
+                  Reminders for activities and streaks
+                </ThemedText>
+              </View>
             </View>
-            <MaterialCommunityIcons
-              name="chevron-right"
-              size={20}
-              color={Colors[colorScheme ?? 'light'].icon}
+            <Switch
+              value={profile.notificationsEnabled}
+              onValueChange={handleNotificationsToggle}
+              trackColor={{
+                false: Colors[colorScheme ?? 'light'].icon + '30',
+                true: Colors[colorScheme ?? 'light'].tint + '70',
+              }}
+              thumbColor={
+                profile.notificationsEnabled
+                  ? Colors[colorScheme ?? 'light'].tint
+                  : '#f4f3f4'
+              }
             />
-          </Pressable>
+          </View>
 
-          <Pressable
-            style={({ pressed }) => [
-              styles.settingRow,
-              { opacity: pressed ? 0.7 : 1 },
-            ]}
-          >
+          <View style={styles.settingRow}>
             <View style={styles.settingLeft}>
               <MaterialCommunityIcons
                 name="share-variant"
                 size={20}
                 color={Colors[colorScheme ?? 'light'].icon}
               />
-              <ThemedText style={styles.settingText}>Share Progress</ThemedText>
+              <View style={styles.settingCopy}>
+                <ThemedText style={styles.settingText}>Share progress</ThemedText>
+                <ThemedText style={styles.settingDescription}>
+                  Show badges and streaks to your friends
+                </ThemedText>
+              </View>
             </View>
-            <MaterialCommunityIcons
-              name="chevron-right"
-              size={20}
-              color={Colors[colorScheme ?? 'light'].icon}
+            <Switch
+              value={profile.shareProgressPublicly}
+              onValueChange={handleShareProgressToggle}
+              trackColor={{
+                false: Colors[colorScheme ?? 'light'].icon + '30',
+                true: Colors[colorScheme ?? 'light'].tint + '70',
+              }}
+              thumbColor={
+                profile.shareProgressPublicly
+                  ? Colors[colorScheme ?? 'light'].tint
+                  : '#f4f3f4'
+              }
             />
-          </Pressable>
+          </View>
 
           <Pressable
             style={({ pressed }) => [
@@ -211,11 +342,16 @@ export default function ProfileScreen() {
           >
             <View style={styles.settingLeft}>
               <MaterialCommunityIcons
-                name="cog"
+                name="shield-lock"
                 size={20}
                 color={Colors[colorScheme ?? 'light'].icon}
               />
-              <ThemedText style={styles.settingText}>Settings</ThemedText>
+              <View style={styles.settingCopy}>
+                <ThemedText style={styles.settingText}>Privacy & data</ThemedText>
+                <ThemedText style={styles.settingDescription}>
+                  Export data or adjust permissions
+                </ThemedText>
+              </View>
             </View>
             <MaterialCommunityIcons
               name="chevron-right"
@@ -303,6 +439,48 @@ const styles = StyleSheet.create({
   screenTitle: {
     fontSize: 32,
   },
+  focusCard: {
+    padding: 24,
+    borderRadius: 16,
+    marginHorizontal: 16,
+    marginTop: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+    gap: 12,
+  },
+  focusHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  focusTitle: {
+    fontSize: 18,
+  },
+  focusRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  focusCopy: {
+    flex: 1,
+  },
+  focusDescription: {
+    fontSize: 13,
+    opacity: 0.75,
+    marginTop: 4,
+    lineHeight: 18,
+  },
+  focusSubNote: {
+    fontSize: 12,
+    opacity: 0.65,
+    marginTop: 4,
+  },
+  focusImpactRow: {
+    paddingVertical: 4,
+  },
   fabContainer: {
     position: 'absolute',
     bottom: 32,
@@ -381,7 +559,15 @@ const styles = StyleSheet.create({
   },
   settingText: {
     fontSize: 14,
+  },
+  settingCopy: {
     marginLeft: 16,
+    flex: 1,
+  },
+  settingDescription: {
+    fontSize: 12,
+    opacity: 0.6,
+    marginTop: 4,
   },
   bottomPadding: {
     height: 48,

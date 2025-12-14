@@ -133,7 +133,7 @@ export function StatsCard({ stats }: StatsCardProps) {
             Environmental Impact
           </ThemedText>
           <ThemedText style={styles.impactDescription}>
-            By choosing plant-based options, you've saved approximately{' '}
+            By choosing plant-based options, you&apos;ve saved approximately{' '}
             <ThemedText type="defaultSemiBold">{stats.co2Saved}kg of CO₂</ThemedText>
             {' '}— equivalent to driving{' '}
             <ThemedText type="defaultSemiBold">

@@ -43,7 +43,7 @@ export default function ActivityDetailScreen() {
             Activity Not Found
           </ThemedText>
           <ThemedText style={styles.errorDescription}>
-            The activity you're looking for doesn't exist or has been removed.
+            The activity you&apos;re looking for doesn&apos;t exist or has been removed.
           </ThemedText>
           <Pressable
             style={[styles.button, { backgroundColor: Colors[colorScheme ?? 'light'].tint }]}
