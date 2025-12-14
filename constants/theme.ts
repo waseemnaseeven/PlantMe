@@ -34,6 +34,49 @@ export const ActivityColors = {
   meetup: '#2E7D32',         // Deep forest green (community, sustainability)
 };
 
+// Gamification color palette
+export const GamificationColors = {
+  // Achievement rarities
+  common: '#95A5A6',        // Gray
+  rare: '#3498DB',          // Blue
+  epic: '#9B59B6',          // Purple
+  legendary: '#F39C12',     // Gold
+  
+  // Level progression
+  bronze: '#CD7F32',
+  silver: '#C0C0C0',
+  gold: '#FFD700',
+  platinum: '#E5E4E2',
+  diamond: '#B9F2FF',
+  
+  // Stats and progress
+  experience: '#2ECC71',    // Green
+  streak: '#E74C3C',        // Red/Orange
+  achievement: '#F39C12',   // Gold
+  
+  // Diet objectives
+  'reduce-meat': '#81C784',
+  'vegetarian': '#66BB6A',
+  'vegan': '#4CAF50',
+  'flexitarian': '#AED581',
+  'pescatarian': '#4DD0E1',
+  'plant-forward': '#7CB342',
+};
+
+// Profile section colors
+export const ProfileColors = {
+  economic: {
+    'budget-conscious': '#FF9800',
+    'moderate': '#FFC107',
+    'flexible': '#4CAF50',
+  },
+  geographic: {
+    'local-only': '#8BC34A',
+    'regional': '#CDDC39',
+    'no-preference': '#9E9E9E',
+  },
+};
+
 export const Fonts = Platform.select({
   ios: {
     /** iOS `UIFontDescriptorSystemDesignDefault` */
