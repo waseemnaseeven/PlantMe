@@ -109,53 +109,66 @@ export const Shadows = {
   },
 };
 
-// Vibrant nature-inspired color palette for activity types
+// Consolidated color system - Yellow/Blue palette
+export const SemanticColors = {
+  // Primary semantic colors
+  success: '#FDD175',       // Yellow - achievements, success, positive actions
+  successDark: '#42330D',   // Dark yellow
+  info: '#94D1FE',          // Blue - information, neutral states
+  infoDark: '#001731',      // Dark blue
+  warning: '#FFB84D',       // Orange - warnings, caution
+  warningDark: '#4A2800',   // Dark orange
+  error: '#FF6B6B',         // Red - errors only (minimal use)
+  errorDark: '#4A0000',     // Dark red
+};
+
+// Activity type colors - using consolidated palette
 export const ActivityColors = {
-  workshop: '#4CAF50',      // Vibrant green (growth, learning, nature)
-  'dinner-party': '#FF6B35', // Vibrant coral/orange (warmth, food, community)
-  meetup: '#2E7D32',         // Deep forest green (community, sustainability)
+  workshop: '#FDD175',      // Yellow (learning, growth)
+  'dinner-party': '#FFB84D', // Orange (warmth, food, community)
+  meetup: '#94D1FE',        // Blue (community, connection)
 };
 
-// Gamification color palette
+// Gamification color palette - consolidated
 export const GamificationColors = {
-  // Achievement rarities
-  common: '#95A5A6',        // Gray
-  rare: '#3498DB',          // Blue
-  epic: '#9B59B6',          // Purple
-  legendary: '#F39C12',     // Gold
+  // Achievement rarities - using Yellow/Blue system
+  common: '#94D1FE',        // Blue (common)
+  rare: '#6BB8F5',          // Medium blue (rare)
+  epic: '#3A8FD9',          // Deep blue (epic)
+  legendary: '#FDD175',     // Yellow (legendary)
   
-  // Level progression
-  bronze: '#CD7F32',
-  silver: '#C0C0C0',
-  gold: '#FFD700',
-  platinum: '#E5E4E2',
-  diamond: '#B9F2FF',
+  // Level progression - Yellow gradient
+  bronze: '#E8C77D',        // Light yellow-bronze
+  silver: '#F5D99B',        // Silver-yellow
+  gold: '#FDD175',          // Gold yellow
+  platinum: '#FFDC8F',      // Bright yellow
+  diamond: '#FFF4D6',       // Very light yellow
   
-  // Stats and progress
-  experience: '#2ECC71',    // Green
-  streak: '#E74C3C',        // Red/Orange
-  achievement: '#F39C12',   // Gold
+  // Stats and progress - using semantic colors
+  experience: '#FDD175',    // Yellow (growth/experience)
+  streak: '#FFB84D',        // Orange (streak/fire)
+  achievement: '#FDD175',   // Yellow (achievements)
   
-  // Diet objectives
-  'reduce-meat': '#81C784',
-  'vegetarian': '#66BB6A',
-  'vegan': '#4CAF50',
-  'flexitarian': '#AED581',
-  'pescatarian': '#4DD0E1',
-  'plant-forward': '#7CB342',
+  // Diet objectives - using Yellow/Blue variations
+  'reduce-meat': '#E8C77D',
+  'vegetarian': '#F5D99B',
+  'vegan': '#FDD175',
+  'flexitarian': '#FFDC8F',
+  'pescatarian': '#94D1FE',
+  'plant-forward': '#FFEB9F',
 };
 
-// Profile section colors
+// Profile section colors - consolidated
 export const ProfileColors = {
   economic: {
-    'budget-conscious': '#FF9800',
-    'moderate': '#FFC107',
-    'flexible': '#4CAF50',
+    'budget-conscious': '#FFB84D',  // Orange
+    'moderate': '#FDD175',          // Yellow
+    'flexible': '#E8C77D',          // Light yellow
   },
   geographic: {
-    'local-only': '#8BC34A',
-    'regional': '#CDDC39',
-    'no-preference': '#9E9E9E',
+    'local-only': '#FDD175',        // Yellow
+    'regional': '#FFDC8F',          // Light yellow
+    'no-preference': '#94D1FE',     // Blue
   },
 };
 

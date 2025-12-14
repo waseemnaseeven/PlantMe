@@ -1,4 +1,4 @@
-import { ActivityColors, Colors } from '@/constants/theme';
+import { ActivityColors, Colors, SemanticColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Activity } from '@/types/activity';
 import { formatDistance } from '@/utils/distance';
@@ -64,11 +64,11 @@ export function ActivityCard({ activity, distance, onPress }: ActivityCardProps)
   };
 
   const getAvailabilityColor = () => {
-    if (!activity.capacity || !activity.attendees) return '#666';
+    if (!activity.capacity || !activity.attendees) return Colors[colorScheme ?? 'light'].icon;
     const ratio = activity.attendees / activity.capacity;
-    if (ratio >= 0.9) return '#FF6B6B'; // Almost full - red
-    if (ratio >= 0.7) return '#FFA500'; // Getting full - orange
-    return '#4CAF50'; // Available - green
+    if (ratio >= 0.9) return SemanticColors.error; // Almost full - red
+    if (ratio >= 0.7) return SemanticColors.warning; // Getting full - orange
+    return SemanticColors.success; // Available - yellow
   };
 
   return (
@@ -101,9 +101,14 @@ export function ActivityCard({ activity, distance, onPress }: ActivityCardProps)
           <MaterialCommunityIcons
             name={getActivityIconName(activity.type)}
             size={14}
-            color="#fff"
+            color={activity.type === 'meetup' ? '#001731' : '#42330D'}
           />
-          <ThemedText style={styles.typeBadgeText}>
+          <ThemedText 
+            style={[
+              styles.typeBadgeText,
+              { color: activity.type === 'meetup' ? '#001731' : '#42330D' }
+            ]}
+          >
             {getActivityLabel(activity.type)}
           </ThemedText>
         </View>
@@ -113,11 +118,16 @@ export function ActivityCard({ activity, distance, onPress }: ActivityCardProps)
           style={[
             styles.priceBadge,
             {
-              backgroundColor: activity.price === 0 ? '#4CAF50' : '#2196F3',
+              backgroundColor: activity.price === 0 ? SemanticColors.success : SemanticColors.info,
             },
           ]}
         >
-          <ThemedText style={styles.priceBadgeText}>
+          <ThemedText 
+            style={[
+              styles.priceBadgeText,
+              { color: activity.price === 0 ? SemanticColors.successDark : SemanticColors.infoDark }
+            ]}
+          >
             {formatPrice(activity.price)}
           </ThemedText>
         </View>
@@ -225,7 +235,6 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   typeBadgeText: {
-    color: '#fff',
     fontSize: 12,
     fontWeight: '600',
   },
@@ -238,7 +247,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   priceBadgeText: {
-    color: '#fff',
     fontSize: 14,
     fontWeight: '700',
   },

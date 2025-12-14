@@ -2,18 +2,19 @@ import { Achievement, LevelConfig, UserStats } from '@/types/profile';
 
 /**
  * Level configuration defining progression system
+ * Using consolidated Yellow gradient for all levels
  */
 export const LEVEL_CONFIGS: LevelConfig[] = [
-  { level: 1, minPoints: 0, maxPoints: 99, title: 'Seedling', icon: 'sprout', color: '#AED581' },
-  { level: 2, minPoints: 100, maxPoints: 249, title: 'Sprout', icon: 'flower', color: '#9CCC65' },
-  { level: 3, minPoints: 250, maxPoints: 499, title: 'Sapling', icon: 'tree', color: '#8BC34A' },
-  { level: 4, minPoints: 500, maxPoints: 999, title: 'Young Tree', icon: 'pine-tree', color: '#7CB342' },
-  { level: 5, minPoints: 1000, maxPoints: 1999, title: 'Growing Tree', icon: 'forest', color: '#689F38' },
-  { level: 6, minPoints: 2000, maxPoints: 3499, title: 'Strong Tree', icon: 'tree-outline', color: '#558B2F' },
-  { level: 7, minPoints: 3500, maxPoints: 5499, title: 'Mighty Oak', icon: 'pine-tree-box', color: '#4CAF50' },
-  { level: 8, minPoints: 5500, maxPoints: 8499, title: 'Forest Guardian', icon: 'forest', color: '#43A047' },
-  { level: 9, minPoints: 8500, maxPoints: 12499, title: 'Nature Sage', icon: 'leaf-circle', color: '#388E3C' },
-  { level: 10, minPoints: 12500, maxPoints: Infinity, title: 'Plant Legend', icon: 'crown', color: '#2E7D32' },
+  { level: 1, minPoints: 0, maxPoints: 99, title: 'Seedling', icon: 'sprout', color: '#FFF4D6' },
+  { level: 2, minPoints: 100, maxPoints: 249, title: 'Sprout', icon: 'flower', color: '#FFEB9F' },
+  { level: 3, minPoints: 250, maxPoints: 499, title: 'Sapling', icon: 'tree', color: '#FFDC8F' },
+  { level: 4, minPoints: 500, maxPoints: 999, title: 'Young Tree', icon: 'pine-tree', color: '#FDD175' },
+  { level: 5, minPoints: 1000, maxPoints: 1999, title: 'Growing Tree', icon: 'forest', color: '#F5D99B' },
+  { level: 6, minPoints: 2000, maxPoints: 3499, title: 'Strong Tree', icon: 'tree-outline', color: '#E8C77D' },
+  { level: 7, minPoints: 3500, maxPoints: 5499, title: 'Mighty Oak', icon: 'pine-tree-box', color: '#DDB968' },
+  { level: 8, minPoints: 5500, maxPoints: 8499, title: 'Forest Guardian', icon: 'forest', color: '#CCA952' },
+  { level: 9, minPoints: 8500, maxPoints: 12499, title: 'Nature Sage', icon: 'leaf-circle', color: '#B8943D' },
+  { level: 10, minPoints: 12500, maxPoints: Infinity, title: 'Plant Legend', icon: 'crown', color: '#A37F28' },
 ];
 
 /**
@@ -153,13 +154,14 @@ export function calculateCO2Saved(activitiesAttended: number): number {
 
 /**
  * Get achievement rarity color
+ * Using consolidated Yellow/Blue system
  */
 export function getAchievementRarityColor(rarity: Achievement['rarity']): string {
   const colors = {
-    common: '#95A5A6',
-    rare: '#3498DB',
-    epic: '#9B59B6',
-    legendary: '#F39C12',
+    common: '#94D1FE',    // Blue (common)
+    rare: '#6BB8F5',      // Medium blue (rare)
+    epic: '#3A8FD9',      // Deep blue (epic)
+    legendary: '#FDD175', // Yellow (legendary)
   };
   return colors[rarity];
 }

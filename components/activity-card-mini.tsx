@@ -1,4 +1,4 @@
-import { ActivityColors, Colors } from '@/constants/theme';
+import { ActivityColors, Colors, SemanticColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Activity } from '@/types/activity';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -60,7 +60,12 @@ export function ActivityCardMini({
             { backgroundColor: activityColor },
           ]}
         >
-          <ThemedText style={styles.typeText}>
+          <ThemedText 
+            style={[
+              styles.typeText,
+              { color: activity.type === 'meetup' ? '#001731' : '#42330D' }
+            ]}
+          >
             {activity.type.replace('-', ' ')}
           </ThemedText>
         </View>
@@ -104,7 +109,7 @@ export function ActivityCardMini({
             {activity.price === 0 ? (
               <View style={styles.metaItem}>
                 <ThemedText
-                  style={[styles.metaText, { color: '#4CAF50', fontWeight: '600' }]}
+                  style={[styles.metaText, { color: SemanticColors.success, fontWeight: '600' }]}
                 >
                   Free
                 </ThemedText>
@@ -177,7 +182,6 @@ const styles = StyleSheet.create({
   typeText: {
     fontSize: 10,
     fontWeight: '600',
-    color: '#fff',
     textTransform: 'capitalize',
   },
   content: {
