@@ -10,8 +10,9 @@ import { ALL_ACHIEVEMENTS, mockUserProfile } from '@/data/profile';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Constraints, DietObjectiveType, UserProfile } from '@/types/profile';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
+  Animated,
   Pressable,
   RefreshControl,
   ScrollView,
@@ -22,8 +23,27 @@ import {
 export default function ProfileScreen() {
   const colorScheme = useColorScheme();
   const [profile, setProfile] = useState<UserProfile>(mockUserProfile);
+  const [originalProfile, setOriginalProfile] = useState<UserProfile>(mockUserProfile);
   const [refreshing, setRefreshing] = useState(false);
-  const [editMode, setEditMode] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
+  const [fabAnimation] = useState(new Animated.Value(0));
+
+  // Check if profile has changes
+  useEffect(() => {
+    const profileChanged = 
+      profile.dietObjective !== originalProfile.dietObjective ||
+      JSON.stringify(profile.constraints) !== JSON.stringify(originalProfile.constraints);
+    
+    setHasChanges(profileChanged);
+
+    // Animate FAB in/out
+    Animated.spring(fabAnimation, {
+      toValue: profileChanged ? 1 : 0,
+      useNativeDriver: true,
+      tension: 50,
+      friction: 7,
+    }).start();
+  }, [profile, originalProfile]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -46,8 +66,15 @@ export default function ProfileScreen() {
     });
   };
 
-  const toggleEditMode = () => {
-    setEditMode(!editMode);
+  const handleSave = () => {
+    // In a real app, you would save to backend here
+    setOriginalProfile(profile);
+    setHasChanges(false);
+  };
+
+  const handleCancel = () => {
+    setProfile(originalProfile);
+    setHasChanges(false);
   };
 
   // Combine user's unlocked achievements with all available achievements
@@ -71,41 +98,11 @@ export default function ProfileScreen() {
           />
         }
       >
-        {/* Header with Edit Button */}
+        {/* Header */}
         <View style={styles.topBar}>
           <ThemedText type="title" style={styles.screenTitle}>
             Profile
           </ThemedText>
-          <Pressable
-            onPress={toggleEditMode}
-            style={({ pressed }) => [
-              styles.editButton,
-              {
-                backgroundColor: editMode
-                  ? Colors[colorScheme ?? 'light'].tint
-                  : Colors[colorScheme ?? 'light'].background,
-                opacity: pressed ? 0.7 : 1,
-              },
-            ]}
-          >
-            <MaterialCommunityIcons
-              name={editMode ? 'check' : 'pencil'}
-              size={20}
-              color={
-                editMode
-                  ? '#fff'
-                  : Colors[colorScheme ?? 'light'].tint
-              }
-            />
-            <ThemedText
-              style={[
-                styles.editButtonText,
-                editMode && { color: '#fff' },
-              ]}
-            >
-              {editMode ? 'Save' : 'Edit'}
-            </ThemedText>
-          </Pressable>
         </View>
 
         {/* Profile Header with Gamification */}
@@ -115,14 +112,12 @@ export default function ProfileScreen() {
         <DietObjectives
           selectedObjective={profile.dietObjective}
           onObjectiveChange={handleDietObjectiveChange}
-          editable={editMode}
         />
 
         {/* Constraints & Preferences Section */}
         <ConstraintsSelector
           constraints={profile.constraints}
           onConstraintsChange={handleConstraintsChange}
-          editable={editMode}
         />
 
         {/* Achievements Section */}
@@ -233,6 +228,59 @@ export default function ProfileScreen() {
         {/* Bottom Padding */}
         <View style={styles.bottomPadding} />
       </ScrollView>
+
+      {/* Floating Action Button */}
+      {hasChanges && (
+        <Animated.View
+          style={[
+            styles.fabContainer,
+            {
+              transform: [
+                {
+                  translateY: fabAnimation.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [100, 0],
+                  }),
+                },
+                {
+                  scale: fabAnimation.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0.8, 1],
+                  }),
+                },
+              ],
+              opacity: fabAnimation,
+            },
+          ]}
+        >
+          <Pressable
+            onPress={handleCancel}
+            style={({ pressed }) => [
+              styles.fabButton,
+              styles.fabCancel,
+              {
+                backgroundColor: '#ff4444',
+                opacity: pressed ? 0.8 : 1,
+              },
+            ]}
+          >
+            <MaterialCommunityIcons name="close" size={24} color="#fff" />
+          </Pressable>
+          <Pressable
+            onPress={handleSave}
+            style={({ pressed }) => [
+              styles.fabButton,
+              styles.fabSave,
+              {
+                backgroundColor: Colors[colorScheme ?? 'light'].tint,
+                opacity: pressed ? 0.8 : 1,
+              },
+            ]}
+          >
+            <MaterialCommunityIcons name="check" size={24} color="#fff" />
+          </Pressable>
+        </Animated.View>
+      )}
     </ThemedView>
   );
 }
@@ -255,19 +303,32 @@ const styles = StyleSheet.create({
   screenTitle: {
     fontSize: 32,
   },
-  editButton: {
+  fabContainer: {
+    position: 'absolute',
+    bottom: 30,
+    right: 20,
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#00000020',
+    gap: 12,
   },
-  editButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginLeft: 6,
+  fabButton: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  fabCancel: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+  },
+  fabSave: {
+    // Main save button keeps default size
   },
   infoCard: {
     padding: 16,

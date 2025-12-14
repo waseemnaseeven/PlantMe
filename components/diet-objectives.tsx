@@ -11,7 +11,6 @@ import { StyleSheet, View } from 'react-native';
 interface DietObjectivesProps {
   selectedObjective: DietObjectiveType;
   onObjectiveChange: (objective: DietObjectiveType) => void;
-  editable?: boolean;
 }
 
 // Slider levels from Flexitarian to Vegan
@@ -53,7 +52,6 @@ const DIET_LEVELS = [
 export function DietObjectives({
   selectedObjective,
   onObjectiveChange,
-  editable = false,
 }: DietObjectivesProps) {
   const colorScheme = useColorScheme();
 
@@ -62,7 +60,6 @@ export function DietObjectives({
   const currentValue = currentLevel.value;
 
   const handleSliderChange = (value: number) => {
-    if (!editable) return;
     const roundedValue = Math.round(value);
     const selectedLevel = DIET_LEVELS[roundedValue];
     if (selectedLevel) {
@@ -84,9 +81,7 @@ export function DietObjectives({
       </View>
 
       <ThemedText style={styles.description}>
-        {editable
-          ? 'Slide to set your plant-based diet level'
-          : 'Your current plant-based diet level'}
+        Slide to adjust your plant-based diet level
       </ThemedText>
 
       {/* Current Selection Display */}
@@ -115,7 +110,6 @@ export function DietObjectives({
           step={1}
           value={currentValue}
           onValueChange={handleSliderChange}
-          disabled={!editable}
           minimumTrackTintColor={currentLevel.color}
           maximumTrackTintColor={Colors[colorScheme ?? 'light'].icon + '30'}
           thumbTintColor={currentLevel.color}

@@ -11,13 +11,11 @@ import { Pressable, StyleSheet, Switch, View } from 'react-native';
 interface ConstraintsSelectorProps {
   constraints: Constraints;
   onConstraintsChange: (constraints: Constraints) => void;
-  editable?: boolean;
 }
 
 export function ConstraintsSelector({
   constraints,
   onConstraintsChange,
-  editable = false,
 }: ConstraintsSelectorProps) {
   const colorScheme = useColorScheme();
 
@@ -25,7 +23,6 @@ export function ConstraintsSelector({
     key: K,
     value: Constraints[K]
   ) => {
-    if (!editable) return;
     onConstraintsChange({ ...constraints, [key]: value });
   };
 
@@ -43,9 +40,7 @@ export function ConstraintsSelector({
       </View>
 
       <ThemedText style={styles.description}>
-        {editable
-          ? 'Customize your food preferences and constraints'
-          : 'Your current preferences and constraints'}
+        Tap to customize your food preferences and constraints
       </ThemedText>
 
       {/* Economic Situation */}
@@ -62,7 +57,6 @@ export function ConstraintsSelector({
               <Pressable
                 key={option.value}
                 onPress={() => updateConstraint('economic', option.value)}
-                disabled={!editable}
                 style={({ pressed }) => [
                   styles.optionCard,
                   isSelected && styles.optionCardSelected,
@@ -111,7 +105,6 @@ export function ConstraintsSelector({
               <Pressable
                 key={option.value}
                 onPress={() => updateConstraint('geographic', option.value)}
-                disabled={!editable}
                 style={({ pressed }) => [
                   styles.optionCard,
                   isSelected && styles.optionCardSelected,
@@ -169,7 +162,6 @@ export function ConstraintsSelector({
           <Switch
             value={constraints.preferSeasonal}
             onValueChange={(value) => updateConstraint('preferSeasonal', value)}
-            disabled={!editable}
             trackColor={{
               false: Colors[colorScheme ?? 'light'].icon + '30',
               true: Colors[colorScheme ?? 'light'].tint + '80',
@@ -199,7 +191,6 @@ export function ConstraintsSelector({
           <Switch
             value={constraints.preferLocal}
             onValueChange={(value) => updateConstraint('preferLocal', value)}
-            disabled={!editable}
             trackColor={{
               false: Colors[colorScheme ?? 'light'].icon + '30',
               true: Colors[colorScheme ?? 'light'].tint + '80',
